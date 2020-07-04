@@ -23,6 +23,4 @@ public class Client {
 
     @OneToMany(mappedBy = "commandePK.idClient")
     private List<Commande> listeCommande;
-
-
 }
