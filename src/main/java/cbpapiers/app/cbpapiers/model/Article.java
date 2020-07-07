@@ -17,11 +17,11 @@ import java.util.Set;
 public class Article {
 
     @Id
-    @Column(name = "AR_Ref")
+    @Column(name = "AR_Ref", length = 17)
     private String reference;
 
     @Column(name = "AR_PriVen")
-    private double Unitprice;
+    private double unitPrice;
 
     @Column(name = "AR_Design")
     private String label;
@@ -33,11 +33,12 @@ public class Article {
     Set<OrderLine> orderLines;
 
     @OneToOne(mappedBy = "article", cascade = CascadeType.ALL)
-    private Detail detail;
+    private ArticleDetails articleDetails;
 
     @OneToMany(mappedBy = "article")
     Set<Discount> discount;
 
+    // todo enlever ?
     @OneToMany(mappedBy = "article")
     Set<TopArticleCustomer> topArticleCustomer;
 }

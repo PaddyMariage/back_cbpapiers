@@ -17,10 +17,10 @@ public class Picture {
     @Id
     private String id;
 
+    // todo check which Java type translates to SQL BLOB type
     private byte[] image;
 
     @OneToOne
     @MapsId
     private Customer customer;
-
 }

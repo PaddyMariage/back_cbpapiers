@@ -29,6 +29,6 @@ public class Discount {
     @JoinColumn(name = "id_customer")
     private Customer customer;
 
+    @Column(name = "AR_remise")
     private double discount;
-
 }

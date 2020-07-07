@@ -13,15 +13,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Detail {
+public class ArticleDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
-
-    private String description;
 
     @OneToOne
     @MapsId
     private Article article;
+
+    @Column(name = "article_details")
+    private String description;
 }
