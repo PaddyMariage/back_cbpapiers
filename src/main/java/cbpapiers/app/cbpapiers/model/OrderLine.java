@@ -10,7 +10,6 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class OrderLine {
@@ -20,14 +19,11 @@ public class OrderLine {
 
     @ManyToOne
     @MapsId("id_article")
-    @JoinColumn(name = "id_article")
     private Article article;
 
     @ManyToOne
     @MapsId("id_order")
-    @JoinColumn(name = "id_order")
     private Order order;
 
     private int quantity;
-
 }

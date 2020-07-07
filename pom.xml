@@ -30,6 +30,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>8.2.2.jre11</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
@@ -90,6 +96,18 @@
                 <port>3306</port>
                 <secret>root123</secret>
                 <user>root</user>
+            </properties>
+        </profile>
+        <profile>
+            <id>cbpapiersDev</id>
+            <properties>
+                <server>localhost</server>
+                <db>cbpapiers</db>
+                <username>SA</username>
+                <config></config>
+                <password>Password1</password>
+                <port>1433</port>
+                <secret>b69ae5b6660152494c2db0dd23a302508e9e70e5</secret>
             </properties>
         </profile>
     </profiles>
