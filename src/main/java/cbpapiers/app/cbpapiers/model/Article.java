@@ -1,53 +1,47 @@
 package cbpapiers.app.cbpapiers.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
+
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class Article {
 
+
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name="AR_Ref")
     private String reference;
 
-    private double prix;
+    @Column(name="AR_PriVen")
+    private double Unitprice;
 
-    private String libelle;
+    @Column(name="AR_Design")
+    private String label;
 
-    private String famille;
+    @Column(name="FA_CodeFamille")
+    private String family;
 
-    public String getReference() {
-        return reference;
-    }
+    @OneToMany(mappedBy = "article")
+    Set<OrderLine> orderLines;
 
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
+    @OneToOne(mappedBy = "article", cascade = CascadeType.ALL)
+    private Detail detail;
 
-    public double getPrix() {
-        return prix;
-    }
+    @OneToMany(mappedBy = "article")
+    Set<Discount> discount;
 
-    public void setPrix(double prix) {
-        this.prix = prix;
-    }
-
-    public String getLibelle() {
-        return libelle;
-    }
-
-    public void setLibelle(String libelle) {
-        this.libelle = libelle;
-    }
-
-    public String getFamille() {
-        return famille;
-    }
-
-    public void setFamille(String famille) {
-        this.famille = famille;
-    }
+    @OneToMany(mappedBy = "article")
+    Set<TopArticleCustomer> topArticleCustomer;
 }
