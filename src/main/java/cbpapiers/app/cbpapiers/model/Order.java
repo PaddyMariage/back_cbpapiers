@@ -1,6 +1,5 @@
 package cbpapiers.app.cbpapiers.model;
 
-import cbpapiers.app.cbpapiers.model.pk.CommandePK;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,20 +13,17 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "test")
 public class Order {
 
-    @EmbeddedId
-    private CommandePK commandePK;
-
-    @Column(name = "DO_PIECE")
-    private String numCommande;
+    @Id
+    @Column(name = "DO_PIECE",length = 12)
+    private String orderNumber;
 
     @ManyToOne
-    @JoinColumn(name="id_customer", nullable=false)
+    @JoinColumn(name = "id_customer", nullable = false)
     private Customer customer;
 
     @OneToMany(mappedBy = "order")
     Set<OrderLine> orderLines;
-
-
 }

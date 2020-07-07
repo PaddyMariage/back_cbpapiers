@@ -18,10 +18,10 @@ public class TopArticleCustomerPK implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Column(name="id_customer")
-    private int idCustomer;
+    private String idCustomer;
 
     @Column(name="id_article")
-    private int idArticle;
+    private String idArticle;
 
     @Override
     public boolean equals(Object o) {

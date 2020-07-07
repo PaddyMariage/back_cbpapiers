@@ -16,14 +16,12 @@ import javax.persistence.*;
 public class Detail {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
 
     private String description;
 
     @OneToOne
     @MapsId
     private Article article;
-
-
 }

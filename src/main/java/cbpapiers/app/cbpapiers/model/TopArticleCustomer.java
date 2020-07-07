@@ -29,5 +29,4 @@ public class TopArticleCustomer {
     private Customer customer;
 
     private int position;
-
 }

@@ -16,10 +16,10 @@ import java.util.Objects;
 public class OrderLinePK implements Serializable {
 
     @Column(name="id_article")
-    private int idArticle;
+    private String idArticle;
 
     @Column(name="id_order")
-    private int idOrder;
+    private String idOrder;
 
     @Override
     public boolean equals(Object o) {

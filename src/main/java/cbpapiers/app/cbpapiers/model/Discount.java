@@ -13,18 +13,19 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "F_ARTCLIENT")
 public class Discount {
 
     @EmbeddedId
     private DiscountPK discountPK;
 
     @ManyToOne
-    @MapsId("id_article")
+    @MapsId("idArticle")
     @JoinColumn(name = "id_article")
     private Article article;
 
     @ManyToOne
-    @MapsId("id_customer")
+    @MapsId("idCustomer")
     @JoinColumn(name = "id_customer")
     private Customer customer;
 

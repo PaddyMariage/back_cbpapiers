@@ -16,10 +16,10 @@ import java.util.Objects;
 public class DiscountPK implements Serializable {
 
     @Column(name="id_customer")
-    private int idCustomer;
+    private String idCustomer;
 
     @Column(name="id_article")
-    private int idArticle;
+    private String idArticle;
 
     @Override
     public boolean equals(Object o) {

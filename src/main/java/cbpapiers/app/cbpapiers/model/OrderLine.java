@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "F_DOCLIGNE")
 public class OrderLine {
 
     @EmbeddedId

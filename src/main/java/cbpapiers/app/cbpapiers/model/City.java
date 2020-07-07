@@ -16,16 +16,15 @@ import java.util.Set;
 public class City {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name="CT_Ville")
+    @Column(name = "CT_Ville")
     private String name;
 
-    @Column(name="CT_CodePostal")
+    @Column(name = "CT_CodePostal")
     private String postalCode;
 
     @OneToMany(mappedBy = "city")
     private Set<Customer> customers;
-
 }

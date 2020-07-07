@@ -14,10 +14,10 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "F_COMPTET")
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "CT_NUM")
     private String id;
 
@@ -31,7 +31,7 @@ public class Customer {
     private String phoneNumber;
 
     @ManyToOne
-    @JoinColumn (name="id_city")
+    @JoinColumn(name = "id_city")
     private City city;
 
     @OneToMany(mappedBy = "customer")

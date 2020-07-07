@@ -15,7 +15,6 @@ import javax.persistence.*;
 public class InfoCustomer {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private String id;
 
     @Column(name = "CT_EMail")
