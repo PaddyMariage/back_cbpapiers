@@ -1,10 +1,10 @@
 package cbpapiers.app.cbpapiers.model;
 
-import cbpapiers.app.cbpapiers.model.pk.OrderLinePK;
+
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import cbpapiers.app.cbpapiers.model.pk.OrderLinePK;
 
 import javax.persistence.*;
 

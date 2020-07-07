@@ -25,7 +25,7 @@ public class City {
     @Column(name="CT_CodePostal")
     private String postalCode;
 
-    @OneToMany(mappedBy = "idCity")
+    @OneToMany(mappedBy = "city")
     private Set<Customer> customers;
 
 }
