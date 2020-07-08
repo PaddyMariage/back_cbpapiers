@@ -55,6 +55,22 @@ public class OrderController {
 
     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity deleteOrder(@PathVariable String id) {
+        Order order = orderDao.findById(id)
+                .orElseThrow(()->new NotFoundException(id, Order.class));
+
+        if(order!=null){
+            orderDao.delete(order);
+            return ResponseEntity.ok().build();
+        } else{
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
+
+
 
 
 
