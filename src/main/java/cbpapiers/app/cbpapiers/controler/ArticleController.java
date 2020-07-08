@@ -1,17 +1,16 @@
 package cbpapiers.app.cbpapiers.controler;
 
+import cbpapiers.app.cbpapiers.NotFoundException;
 import cbpapiers.app.cbpapiers.dao.ArticleDAO;
 import cbpapiers.app.cbpapiers.model.Article;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @CrossOrigin
 @RestController
+@RequestMapping("/articles")
 public class ArticleController {
     private ArticleDAO articleDao;
 
@@ -20,8 +19,16 @@ public class ArticleController {
         this.articleDao = articleDAO;
     }
 
-    @GetMapping("/articles")
-    public List<Article> getArticles() {
+    @GetMapping
+    public List<Article> getAllArticles() {
         return articleDao.findAll();
     }
+
+    @GetMapping(value = "/{id}")
+    public Article getArticleById(@PathVariable String id){
+        return articleDao.findById(id).orElseThrow(()-> new NotFoundException(id,Article.class));
+    }
+
+
+
 }
