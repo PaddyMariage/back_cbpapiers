@@ -17,7 +17,7 @@ import java.util.Set;
 public class Article {
 
     @Id
-    @Column(name = "AR_Ref", length = 17)
+    @Column(name = "AR_Ref")
     private String reference;
 
     @Column(name = "AR_PriVen")

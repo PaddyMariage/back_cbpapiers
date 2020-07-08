@@ -1,4 +1,4 @@
-package cbpapiers.app.cbpapiers;
+package cbpapiers.app.cbpapiers.controler;
 
 import cbpapiers.app.cbpapiers.dao.ArticleDAO;
 import cbpapiers.app.cbpapiers.model.Article;

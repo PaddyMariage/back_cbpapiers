@@ -17,7 +17,7 @@ import java.util.Set;
 public class Order {
 
     @Id
-    @Column(name = "DO_PIECE",length = 12)
+    @Column(name = "DO_PIECE")
     private String orderNumber;
 
     @ManyToOne
