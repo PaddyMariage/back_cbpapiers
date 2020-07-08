@@ -17,15 +17,15 @@ public class InfoCustomer {
     @Id
     private String id;
 
+    @OneToOne
+    @MapsId
+    private Customer customer;
+
     @Column(name = "CT_EMail")
     private String email;
 
     private String password;
 
-    private String role;
-
-    @OneToOne
-    @MapsId
-    private Customer customer;
-
+    @ManyToOne
+    private Role role;
 }

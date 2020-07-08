@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class TopArticleCustomer {
+public class TopArticleCustomer implements Comparable {
 
     @EmbeddedId
     private TopArticleCustomerPK topArticleCustomerPK;
@@ -29,4 +29,9 @@ public class TopArticleCustomer {
     private Customer customer;
 
     private int position;
+
+    @Override
+    public int compareTo(Object top) {
+        return this.position - ((TopArticleCustomer)top).getPosition();
+    }
 }
