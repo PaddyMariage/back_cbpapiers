@@ -2,10 +2,10 @@ package cbpapiers.app.cbpapiers.controller;
 
 
 import cbpapiers.app.cbpapiers.NotFoundException;
-import cbpapiers.app.cbpapiers.dao.ArticleDAO;
 import cbpapiers.app.cbpapiers.dao.OrderDAO;
-import cbpapiers.app.cbpapiers.model.Article;
+import cbpapiers.app.cbpapiers.dao.OrderLineDAO;
 import cbpapiers.app.cbpapiers.model.Order;
+import cbpapiers.app.cbpapiers.model.OrderLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +17,17 @@ import java.util.List;
 @RequestMapping("/orders")
 public class OrderController {
     private OrderDAO orderDao;
+    private OrderLineDAO orderLineDAO;
 
     @Autowired
-    public OrderController(OrderDAO orderDao) {
+    public OrderController(OrderDAO orderDao, OrderLineDAO orderLineDAO) {
         this.orderDao = orderDao;
+        this.orderLineDAO = orderLineDAO;
     }
 
     @GetMapping
     public List<Order> getAllOrders() {
-        return orderDao.findAll();
+        return orderDao.findAllByCustomer();
     }
 
     @GetMapping(value = "/{id}")
@@ -42,17 +44,21 @@ public class OrderController {
         }
     }
 
-    @PatchMapping(value = "/{id}")
-    public ResponseEntity updateOrder(@PathVariable String id, @RequestBody Order order) {
-        Order orderdb = orderDao.findById(id)
-                .orElseThrow(()->new NotFoundException(id, Order.class));
-        if(orderdb!=null){
-            orderDao.save(orderdb);
-            return ResponseEntity.ok().build();
-        } else{
-            return ResponseEntity.notFound().build();
+    // todo maybe switch to OrderDao.save(order)
+    @PatchMapping
+    public ResponseEntity updateOrder(@RequestBody List<OrderLine> orderLines) {
+        if(orderLines != null && orderLines.size() != 0){
+            String idOrder = orderLines.get(0).getOrder().getOrderNumber();
+            Order orderDB = orderDao.findById(idOrder)
+                    .orElseThrow(()->new NotFoundException(idOrder, Order.class));
+            if(orderDB!=null){
+                orderLines.forEach(orderLine -> orderLineDAO.save(orderLine));
+                return ResponseEntity.ok().build();
+            } else{
+                return ResponseEntity.notFound().build();
+            }
         }
-
+        return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping(value = "/{id}")
@@ -66,12 +72,5 @@ public class OrderController {
         } else{
             return ResponseEntity.notFound().build();
         }
-
     }
-
-
-
-
-
-
 }

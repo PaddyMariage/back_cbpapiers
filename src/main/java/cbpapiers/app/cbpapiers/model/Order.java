@@ -24,6 +24,6 @@ public class Order {
     @JoinColumn(name = "id_customer", nullable = false)
     private Customer customer;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     Set<OrderLine> orderLines;
 }

@@ -14,6 +14,7 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
+@RequestMapping("/customers")
 public class CustomerController {
     private CustomerDAO customerDAO;
     private InfoCustomerDAO infoCustomerDAO;
@@ -27,19 +28,19 @@ public class CustomerController {
     }
 
     // for all users
-    @GetMapping("/customers/{id}")
+    @GetMapping("/{id}")
     public Customer getCustomer(@PathVariable String id) {
         return customerDAO.findById(id).orElse(null);
     }
 
     // for admin
-    @GetMapping("/customers")
+    @GetMapping
     public List<Customer> getAllCustomers() {
         return customerDAO.findAll();
     }
 
     // it doesn't really delete the customer but makes it inactive so we can keep the order records
-    @DeleteMapping("/customers/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity setInactiveCustomer(@PathVariable String id){
         Role role = roleDAO.findByRole("inactive");
         InfoCustomer infoCustomer = infoCustomerDAO.findById(id).orElse(null);

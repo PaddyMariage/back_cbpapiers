@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
+@RequestMapping("/top/customer")
 public class TopArticleCustomerController {
 
     private TopArticleCustomerDAO topArticleCustomerDAO;
@@ -30,7 +31,7 @@ public class TopArticleCustomerController {
         this.customerDAO = customerDAO;
     }
 
-    @GetMapping("/top/customer/{idCustomer}")
+    @GetMapping("/{idCustomer}")
     public List<Article> getTopArticleCustomer(@PathVariable String idCustomer){
         Customer customer = customerDAO.findById(idCustomer).orElse(null);
         if(customer!= null) {
@@ -58,8 +59,11 @@ public class TopArticleCustomerController {
                 topArticleCustomerDAO.save(topArticleCustomer);
                 return ResponseEntity.created(new URI("/top/customer/" + topArticleCustomer.getCustomer())).build();
             }
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.badRequest().build();
     }
+
+    // ajout
+    @PostMapping
 }
