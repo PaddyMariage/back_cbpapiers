@@ -24,8 +24,4 @@ public class City {
 
     @Column(name = "CT_CodePostal")
     private String postalCode;
-
-    // todo enlever ?
-    @OneToMany(mappedBy = "city")
-    private Set<Customer> customers;
 }

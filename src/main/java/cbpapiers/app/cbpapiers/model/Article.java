@@ -37,8 +37,4 @@ public class Article {
 
     @OneToMany(mappedBy = "article")
     Set<Discount> discount;
-
-    // todo enlever ?
-    @OneToMany(mappedBy = "article")
-    Set<TopArticleCustomer> topArticleCustomer;
 }
