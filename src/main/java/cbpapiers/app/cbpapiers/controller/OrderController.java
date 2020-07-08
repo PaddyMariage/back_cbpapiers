@@ -1,4 +1,4 @@
-package cbpapiers.app.cbpapiers.controler;
+package cbpapiers.app.cbpapiers.controller;
 
 
 import cbpapiers.app.cbpapiers.NotFoundException;

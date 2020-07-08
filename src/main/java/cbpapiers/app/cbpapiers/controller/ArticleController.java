@@ -28,8 +28,4 @@ public class ArticleController {
     public Article getArticleById(@PathVariable String id){
         return articleDao.findById(id).orElseThrow(()-> new NotFoundException(id,Article.class));
     }
-
-
-
-
 }
