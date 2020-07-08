@@ -13,7 +13,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class ArticleController {
-    ArticleDAO articleDao;
+    private ArticleDAO articleDao;
 
     @Autowired
     public ArticleController(ArticleDAO articleDAO) {
