@@ -6,6 +6,7 @@ import cbpapiers.app.cbpapiers.dao.TopArticleCustomerDAO;
 import cbpapiers.app.cbpapiers.model.Article;
 import cbpapiers.app.cbpapiers.model.Customer;
 import cbpapiers.app.cbpapiers.model.TopArticleCustomer;
+import cbpapiers.app.cbpapiers.model.pk.TopArticleCustomerPK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +49,7 @@ public class TopArticleCustomerController {
     }
 
     @PutMapping
-    public ResponseEntity addTopListeArticle(@RequestBody TopArticleCustomer topArticleCustomer) throws URISyntaxException {
+    public ResponseEntity modifListArticle(@RequestBody TopArticleCustomer topArticleCustomer) throws URISyntaxException {
         if(topArticleCustomer != null) {
             List<TopArticleCustomer> topArticleCustomerList = topArticleCustomerDAO.findAllByCustomer(topArticleCustomer.getCustomer());
             if (topArticleCustomerList.size() != 0) {
@@ -64,6 +65,26 @@ public class TopArticleCustomerController {
         return ResponseEntity.badRequest().build();
     }
 
-    // ajout
     @PostMapping
+    public ResponseEntity addTopArticle(@RequestBody List<TopArticleCustomer> topArticleCustomer) throws URISyntaxException {
+        if(topArticleCustomer != null && topArticleCustomer.size() != 0) {
+            topArticleCustomer.forEach(top -> topArticleCustomerDAO.save(top));
+            return ResponseEntity.created(new URI("/top/customer/" + topArticleCustomer.get(0).getCustomer())).build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @DeleteMapping("/{idCustomer}/{idArticle}")
+    public ResponseEntity deleteTopArticle(@PathVariable String idCustomer, @PathVariable String idArticle ){
+        TopArticleCustomerPK topArticleCustomerPK = new TopArticleCustomerPK();
+        topArticleCustomerPK.setIdArticle(idArticle);
+        topArticleCustomerPK.setIdCustomer(idCustomer);
+
+        TopArticleCustomer topArticleCustomer = topArticleCustomerDAO.findById(topArticleCustomerPK).orElse(null);
+        if(topArticleCustomer != null){
+            topArticleCustomerDAO.delete(topArticleCustomer);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
