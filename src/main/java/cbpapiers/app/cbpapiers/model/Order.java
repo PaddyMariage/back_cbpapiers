@@ -16,6 +16,7 @@ import java.util.Set;
 @Table(name = "client_order")
 public class Order {
 
+    //todo add panier
     @Id
     @Column(name = "DO_PIECE")
     private String orderNumber;

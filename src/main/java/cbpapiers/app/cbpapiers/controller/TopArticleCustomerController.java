@@ -32,6 +32,7 @@ public class TopArticleCustomerController {
         this.customerDAO = customerDAO;
     }
 
+    // get top list
     @GetMapping("/{idCustomer}")
     public List<Article> getTopArticleCustomer(@PathVariable String idCustomer){
         Customer customer = customerDAO.findById(idCustomer).orElse(null);

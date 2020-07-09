@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface OrderDAO extends JpaRepository<Order,String> {
-    List<Order> findAllByCustomer();
+    List<Order> findAllByCustomer(String idCustomer);
 }

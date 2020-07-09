@@ -5,7 +5,6 @@ import cbpapiers.app.cbpapiers.dao.InfoCustomerDAO;
 import cbpapiers.app.cbpapiers.dao.RoleDAO;
 import cbpapiers.app.cbpapiers.model.Customer;
 import cbpapiers.app.cbpapiers.model.InfoCustomer;
-import cbpapiers.app.cbpapiers.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,11 +40,10 @@ public class CustomerController {
 
     // it doesn't really delete the customer but makes it inactive so we can keep the order records
     @DeleteMapping("/{id}")
-    public ResponseEntity setInactiveCustomer(@PathVariable String id){
-        Role role = roleDAO.findByRole("inactive");
+    public ResponseEntity setInactiveCustomer(@PathVariable String id) {
         InfoCustomer infoCustomer = infoCustomerDAO.findById(id).orElse(null);
-        if(infoCustomer != null) {
-            infoCustomer.setRole(role);
+        if (infoCustomer != null) {
+            infoCustomer.setActive(false);
             infoCustomerDAO.save(infoCustomer);
             return ResponseEntity.noContent().build();
         }

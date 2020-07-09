@@ -25,14 +25,16 @@ public class OrderController {
         this.orderLineDAO = orderLineDAO;
     }
 
-    @GetMapping
-    public List<Order> getAllOrders() {
-        return orderDao.findAllByCustomer();
+    // liste historique
+    @GetMapping("/{idCustomer}")
+    public List<Order> getAllOrders(@PathVariable String idCustomer) {
+        return orderDao.findAllByCustomer(idCustomer);
     }
 
-    @GetMapping(value = "/{id}")
-    public Order getArticleById(@PathVariable String id){
-        return orderDao.findById(id).orElseThrow(()-> new NotFoundException(id,Order.class));
+    // vue 1 commande
+    @GetMapping(value = "/{idOrder}")
+    public Order getOrderById(@PathVariable String idOrder){
+        return orderDao.findById(idOrder).orElseThrow(()-> new NotFoundException(idOrder,Order.class));
     }
 
     @PostMapping
@@ -44,28 +46,10 @@ public class OrderController {
         }
     }
 
-    // todo maybe switch to OrderDao.save(order)
-    @PatchMapping
-    public ResponseEntity updateOrder(@RequestBody List<OrderLine> orderLines) {
-        if(orderLines != null && orderLines.size() != 0){
-            String idOrder = orderLines.get(0).getOrder().getOrderNumber();
-            Order orderDB = orderDao.findById(idOrder)
-                    .orElseThrow(()->new NotFoundException(idOrder, Order.class));
-            if(orderDB!=null){
-                orderLines.forEach(orderLine -> orderLineDAO.save(orderLine));
-                return ResponseEntity.ok().build();
-            } else{
-                return ResponseEntity.notFound().build();
-            }
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
     @DeleteMapping(value = "/{id}")
     public ResponseEntity deleteOrder(@PathVariable String id) {
         Order order = orderDao.findById(id)
                 .orElseThrow(()->new NotFoundException(id, Order.class));
-
         if(order!=null){
             orderDao.delete(order);
             return ResponseEntity.ok().build();

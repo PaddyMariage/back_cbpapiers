@@ -26,6 +26,7 @@ public class InfoCustomer {
 
     private String password;
 
-    @ManyToOne
-    private Role role;
+    private boolean isAdmin;
+
+    private boolean isActive;
 }
