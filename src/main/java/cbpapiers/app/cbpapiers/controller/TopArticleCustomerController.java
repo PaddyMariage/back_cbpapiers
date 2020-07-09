@@ -32,42 +32,48 @@ public class TopArticleCustomerController {
         this.customerDAO = customerDAO;
     }
 
-    // get top list
+    // get top article for a customer
     @GetMapping("/{idCustomer}")
-    public List<Article> getTopArticleCustomer(@PathVariable String idCustomer){
+    public List<TopArticleCustomer> getTopArticleCustomer(@PathVariable String idCustomer){
         Customer customer = customerDAO.findById(idCustomer).orElse(null);
         if(customer!= null) {
             //List<Article> sortedArticleList = topArticleCustomerDAO.findByCustomer(customer);
             List<TopArticleCustomer> topArticleCustomerList = topArticleCustomerDAO.findAllByCustomer(customer);
             // sort accordingly to compareTo defined in TopArticleCustomer ( by asc position )
+            /*
             Collections.sort(topArticleCustomerList);
             List<Article> sortedArticleList = topArticleCustomerList.stream()
                     .map(TopArticleCustomer::getArticle)
                     .collect(Collectors.toList());
-            return sortedArticleList;
+             */
+            return topArticleCustomerList;
         }
         return new ArrayList();
     }
 
+    // add a TopArticle at a specific position
     @PutMapping
-    public ResponseEntity modifListArticle(@RequestBody TopArticleCustomer topArticleCustomer) throws URISyntaxException {
+    public ResponseEntity addTopListArticle(@RequestBody TopArticleCustomer topArticleCustomer) throws URISyntaxException {
         if(topArticleCustomer != null) {
             List<TopArticleCustomer> topArticleCustomerList = topArticleCustomerDAO.findAllByCustomer(topArticleCustomer.getCustomer());
             if (topArticleCustomerList.size() != 0) {
                 topArticleCustomerList.stream()
-                        .filter(aTopArticleCustomer -> aTopArticleCustomer.getPosition() > topArticleCustomer.getPosition())
+                        .filter(aTopArticleCustomer -> aTopArticleCustomer.getPosition() <= topArticleCustomer.getPosition())
                         .peek(top -> top.setPosition(top.getPosition()+1))
                         .forEach(top -> topArticleCustomerDAO.save(top));
                 topArticleCustomerDAO.save(topArticleCustomer);
+                // maybe not good
                 return ResponseEntity.created(new URI("/top/customer/" + topArticleCustomer.getCustomer())).build();
+            }else{
+                // add
+                topArticleCustomerDAO.save(topArticleCustomer);
             }
-            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.badRequest().build();
     }
 
     @PostMapping
-    public ResponseEntity addTopArticle(@RequestBody List<TopArticleCustomer> topArticleCustomer) throws URISyntaxException {
+    public ResponseEntity modifTopArticle(@RequestBody List<TopArticleCustomer> topArticleCustomer) throws URISyntaxException {
         if(topArticleCustomer != null && topArticleCustomer.size() != 0) {
             topArticleCustomer.forEach(top -> topArticleCustomerDAO.save(top));
             return ResponseEntity.created(new URI("/top/customer/" + topArticleCustomer.get(0).getCustomer())).build();
