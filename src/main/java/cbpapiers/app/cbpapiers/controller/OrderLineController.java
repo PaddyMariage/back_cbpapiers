@@ -42,15 +42,8 @@ public class OrderLineController {
     @PatchMapping
     public ResponseEntity updateOrder(@RequestBody List<OrderLine> orderLines) {
         if(orderLines != null && orderLines.size() != 0){
-            String idOrder = orderLines.get(0).getOrder().getOrderNumber();
-            Order orderDB = orderDAO.findById(idOrder)
-                    .orElseThrow(()->new NotFoundException(idOrder, Order.class));
-            if(orderDB!=null){
-                orderLines.forEach(orderLine -> orderLineDAO.save(orderLine));
-                return ResponseEntity.ok().build();
-            } else{
-                return ResponseEntity.notFound().build();
-            }
+            orderLines.forEach(orderLine -> orderLineDAO.save(orderLine));
+            return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
     }
