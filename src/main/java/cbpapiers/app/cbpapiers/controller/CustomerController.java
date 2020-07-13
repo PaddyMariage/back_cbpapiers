@@ -2,7 +2,7 @@ package cbpapiers.app.cbpapiers.controller;
 
 import cbpapiers.app.cbpapiers.dao.CustomerDAO;
 import cbpapiers.app.cbpapiers.dao.InfoCustomerDAO;
-import cbpapiers.app.cbpapiers.dao.RoleDAO;
+//import cbpapiers.app.cbpapiers.dao.RoleDAO;
 import cbpapiers.app.cbpapiers.model.Customer;
 import cbpapiers.app.cbpapiers.model.InfoCustomer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +17,21 @@ import java.util.List;
 public class CustomerController {
     private CustomerDAO customerDAO;
     private InfoCustomerDAO infoCustomerDAO;
-    private RoleDAO roleDAO;
+//    private RoleDAO roleDAO;
 
     @Autowired
-    public CustomerController(CustomerDAO customerDAO, InfoCustomerDAO infoCustomerDAO, RoleDAO roleDAO) {
+    public CustomerController(CustomerDAO customerDAO, InfoCustomerDAO infoCustomerDAO) {
         this.customerDAO = customerDAO;
         this.infoCustomerDAO = infoCustomerDAO;
-        this.roleDAO = roleDAO;
     }
 
-    // for all users
+
     @GetMapping("/{id}")
     public Customer getCustomer(@PathVariable String id) {
         return customerDAO.findById(id).orElse(null);
     }
 
-    // for admin
+    // retrieve all customers
     @GetMapping
     public List<Customer> getAllCustomers() {
         return customerDAO.findAll();
