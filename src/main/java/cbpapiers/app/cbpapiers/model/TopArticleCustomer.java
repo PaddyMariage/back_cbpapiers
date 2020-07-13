@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = 'TOP_ARTICLE')
+@Table(name = "TOP_ARTICLE")
 public class TopArticleCustomer implements Comparable {
 
     @EmbeddedId

@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = 'CITY')
+@Table(name = "CITY")
 public class City {
 
     @Id

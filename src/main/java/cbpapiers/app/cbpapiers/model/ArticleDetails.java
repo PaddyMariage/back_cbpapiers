@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = 'ARTICLE_DETAILS')
+@Table(name = "ARTICLE_DETAILS")
 public class ArticleDetails {
 
     @Id
