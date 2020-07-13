@@ -19,11 +19,11 @@ public class OrderLine {
     private OrderLinePK orderLinePK;
 
     @ManyToOne
-    @MapsId("id_article")
+    @MapsId("idArticle")
     private Article article;
 
     @ManyToOne
-    @MapsId("id_order")
+    @MapsId("idOrder")
     private Order order;
 
     private int quantity;

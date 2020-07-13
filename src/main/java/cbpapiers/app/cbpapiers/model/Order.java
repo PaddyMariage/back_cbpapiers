@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "client_order")
+@Table(name = "CLIENT_ORDER")
 public class Order {
 
     //todo add panier
