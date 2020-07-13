@@ -25,7 +25,7 @@ public class OrderController {
         this.orderLineDAO = orderLineDAO;
     }
 
-    // liste historique
+    // retrieve the historic of orders from a customer
     @GetMapping("/{idCustomer}")
     public List<Order> getAllOrders(@PathVariable String idCustomer) {
         return orderDao.findAllByCustomer(idCustomer);
