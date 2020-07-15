@@ -15,10 +15,10 @@ import java.util.Objects;
 @Embeddable
 public class OrderLinePK implements Serializable {
 
-    @Column(name="id_article")
+    @Column(name="AR_Ref")
     private String idArticle;
 
-    @Column(name="id_order")
+    @Column(name="DO_PIECE")
     private String idOrder;
 
     @Override

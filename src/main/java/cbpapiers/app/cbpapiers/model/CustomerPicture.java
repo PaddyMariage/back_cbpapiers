@@ -12,22 +12,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "F_COMPTET_INFO")
-public class InfoCustomer {
+@Table(name = "CUSTOMER_PICTURE")
+public class CustomerPicture {
 
     @Id
-    private String id;
+    private String idCustomer;
 
-    @OneToOne
     @MapsId
+    @OneToOne
+    @JoinColumn(name = "CT_NUM")
     private Customer customer;
 
-    @Column(name = "CT_EMail")
-    private String email;
+    // todo check which Java type translates to SQL BLOB type
+    private byte[] image;
 
-    private String password;
-
-    private boolean isAdmin;
-
-    private boolean isActive;
 }

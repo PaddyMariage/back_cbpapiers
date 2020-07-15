@@ -17,10 +17,10 @@ import java.util.Objects;
 public class TopArticleCustomerPK implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Column(name="id_customer")
+    @Column(name="CT_NUM")
     private String idCustomer;
 
-    @Column(name="id_article")
+    @Column(name="AR_Ref")
     private String idArticle;
 
     @Override

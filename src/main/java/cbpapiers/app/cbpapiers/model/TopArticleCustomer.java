@@ -20,13 +20,13 @@ public class TopArticleCustomer implements Comparable {
     private TopArticleCustomerPK topArticleCustomerPK;
 
     @ManyToOne
-    @MapsId("id_article")
-    @JoinColumn(name = "id_article")
+    @MapsId("AR_Ref")
+    @JoinColumn(name = "AR_Ref")
     private Article article;
 
     @ManyToOne
-    @MapsId("id_customer")
-    @JoinColumn(name = "id_customer")
+    @MapsId("CT_NUM")
+    @JoinColumn(name = "CT_NUM")
     private Customer customer;
 
     private int position;

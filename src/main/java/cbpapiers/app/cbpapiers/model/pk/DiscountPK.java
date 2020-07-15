@@ -15,10 +15,10 @@ import java.util.Objects;
 @Embeddable
 public class DiscountPK implements Serializable {
 
-    @Column(name="id_customer")
+    @Column(name="CT_NUM")
     private String idCustomer;
 
-    @Column(name="id_article")
+    @Column(name="AR_Ref")
     private String idArticle;
 
     @Override

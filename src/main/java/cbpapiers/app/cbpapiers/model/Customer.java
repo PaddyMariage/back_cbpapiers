@@ -8,7 +8,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.util.Set;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,8 +23,14 @@ public class Customer {
     @Column(name = "CT_Intitule")
     private String name;
 
+    private String password;
+
+    private boolean isAdmin;
+
+    private boolean isActive;
+
     @Column(name = "CT_Adresse")
-    private String adress;
+    private String address;
 
     @Column(name = "CT_Telephone")
     private String phoneNumber;
@@ -34,18 +39,21 @@ public class Customer {
     @JoinColumn(name = "id_city")
     private City city;
 
+    @Column(name = "CT_EMail")
+    private String email;
+
     @OneToMany(mappedBy = "customer")
-    private Set<Order> orders;
+    private Set<Basket> baskets;
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
-    private InfoCustomer infoCustomer;
-
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
-    private Picture picture;
+    private CustomerPicture customerPicture;
 
     @OneToMany(mappedBy = "customer")
     Set<Discount> discount;
 
     @OneToMany(mappedBy = "customer")
     Set<TopArticleCustomer> topArticleCustomer;
+
+    @OneToMany(mappedBy = "customer")
+    Set<CustomerFile> customerFiles;
 }

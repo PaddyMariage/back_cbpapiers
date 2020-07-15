@@ -6,22 +6,25 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "PICTURE")
-public class Picture {
+@Table(name = "ARTICLE_PICTURES")
+public class ArticlePicture {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @OneToMany(mappedBy = "articlePicture")
+    private Set<Article> articles;
 
     // todo check which Java type translates to SQL BLOB type
     private byte[] image;
 
-    @OneToOne
-    @MapsId
-    private Customer customer;
+
 }

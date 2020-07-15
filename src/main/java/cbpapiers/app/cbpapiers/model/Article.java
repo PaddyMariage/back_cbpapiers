@@ -33,8 +33,13 @@ public class Article {
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
     Set<OrderLine> orderLines;
 
-    @OneToOne(mappedBy = "article", cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "id_details")
     private ArticleDetails articleDetails;
+
+    @ManyToOne
+    @JoinColumn(name = "id_picture")
+    private ArticlePicture articlePicture;
 
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
     Set<Discount> discount;
