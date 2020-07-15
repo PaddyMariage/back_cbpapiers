@@ -29,12 +29,13 @@ public class Article {
     @Column(name = "FA_CodeFamille")
     private String family;
 
-    @OneToMany(mappedBy = "article")
+    //ajout du fetch eager car erreur qui dit : failed to lazily initialize a collection of role : Article.orderLines quand on fait un findbyID
+    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
     Set<OrderLine> orderLines;
 
     @OneToOne(mappedBy = "article", cascade = CascadeType.ALL)
     private ArticleDetails articleDetails;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
     Set<Discount> discount;
 }
