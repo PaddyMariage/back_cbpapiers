@@ -85,7 +85,7 @@
             </activation>
             <properties>
                 <server>localhost</server>
-                <db>cbpapiers</db>
+                <db>cbpa</db>
                 <username>SA</username>
                 <config></config>
                 <password>Password1</password>

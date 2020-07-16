@@ -29,6 +29,10 @@ public class Discount {
     @JoinColumn(name = "CT_NUM")
     private Customer customer;
 
-    @Column(name = "AR_remise")
+    @Column(name = "AR_Remise")
     private double discount;
+
+    @Column(name = "AC_PrixVen")
+    private double clientPrice;
+
 }

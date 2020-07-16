@@ -15,7 +15,7 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "F_ARTICLE")
 public class Article {
-
+    
     @Id
     @Column(name = "AR_Ref")
     private String reference;
@@ -28,6 +28,9 @@ public class Article {
 
     @Column(name = "FA_CodeFamille")
     private String family;
+
+    @Transient
+    private double finalPrice;
 
     //ajout du fetch eager car erreur qui dit : failed to lazily initialize a collection of role : Article.orderLines quand on fait un findbyID
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
@@ -43,4 +46,6 @@ public class Article {
 
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
     Set<Discount> discount;
+
+
 }
