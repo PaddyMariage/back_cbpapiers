@@ -18,6 +18,7 @@ import java.util.Set;
 public class ArticleDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @OneToMany(mappedBy = "articleDetails")

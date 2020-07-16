@@ -15,7 +15,7 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "F_ARTICLE")
 public class Article {
-    
+
     @Id
     @Column(name = "AR_Ref")
     private String reference;
