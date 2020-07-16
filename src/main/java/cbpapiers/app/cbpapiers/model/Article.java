@@ -20,7 +20,7 @@ public class Article {
     @Column(name = "AR_Ref")
     private String reference;
 
-    @Column(name = "AR_PriVen")
+    @Column(name = "AR_PrixVen")
     private double unitPrice;
 
     @Column(name = "AR_Design")
