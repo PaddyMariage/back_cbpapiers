@@ -1,5 +1,7 @@
 package cbpapiers.app.cbpapiers.model;
 
+import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +23,7 @@ public class Customer {
     private String id;
 
     @Column(name = "CT_Intitule")
+    @JsonView(MyJsonView.Customer.class)
     private String name;
 
     private String password;
@@ -42,7 +45,8 @@ public class Customer {
     @Column(name = "CT_EMail")
     private String email;
 
-    @OneToMany(mappedBy = "customer")
+    //ajout d'un fectheager nécessaire pour récupérer l'historique des commandes d'un client
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private Set<Order> orders;
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)

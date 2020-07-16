@@ -1,5 +1,7 @@
 package cbpapiers.app.cbpapiers.model.pk;
 
+import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,9 +18,11 @@ import java.util.Objects;
 public class OrderLinePK implements Serializable {
 
     @Column(name="AR_Ref")
+    @JsonView(MyJsonView.OrderDetails.class)
     private String idArticle;
 
     @Column(name="DO_PIECE")
+    @JsonView(MyJsonView.OrderDetails.class)
     private String idOrder;
 
     @Override

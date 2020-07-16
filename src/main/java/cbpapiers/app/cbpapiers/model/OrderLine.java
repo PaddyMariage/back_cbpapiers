@@ -1,6 +1,8 @@
 package cbpapiers.app.cbpapiers.model;
 
 
+import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -16,13 +18,16 @@ import javax.persistence.*;
 public class OrderLine {
 
     @EmbeddedId
+    @JsonView(MyJsonView.OrderDetails.class)
     private OrderLinePK orderLinePK;
 
+    @JsonView(MyJsonView.OrderDetails.class)
     private int quantity;
 
     @ManyToOne
     @MapsId("AR_Ref")
     @JoinColumn(name = "AR_Ref")
+    @JsonView(MyJsonView.OrderDetails.class)
     private Article article;
 
     @ManyToOne

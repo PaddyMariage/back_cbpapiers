@@ -1,7 +1,9 @@
 package cbpapiers.app.cbpapiers.controller;
 
 import cbpapiers.app.cbpapiers.dao.CustomerDAO;
+import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
 import cbpapiers.app.cbpapiers.model.Customer;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
+    @JsonView(MyJsonView.Customer.class)
     public Customer getCustomer(@PathVariable String id) {
         return customerDAO.findById(id).orElse(null);
     }
