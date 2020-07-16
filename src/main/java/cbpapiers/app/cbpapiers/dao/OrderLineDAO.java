@@ -1,6 +1,6 @@
 package cbpapiers.app.cbpapiers.dao;
 
-import cbpapiers.app.cbpapiers.model.Basket;
+import cbpapiers.app.cbpapiers.model.Order;
 import cbpapiers.app.cbpapiers.model.OrderLine;
 import cbpapiers.app.cbpapiers.model.pk.OrderLinePK;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface OrderLineDAO extends JpaRepository<OrderLine, OrderLinePK> {
 
-    List<OrderLine> findAllByBasket(Basket basket);
+    List<OrderLine> findAllByOrder(Order order);
 }

@@ -1,7 +1,6 @@
 package cbpapiers.app.cbpapiers.controller;
 
 import cbpapiers.app.cbpapiers.dao.CustomerDAO;
-//import cbpapiers.app.cbpapiers.dao.RoleDAO;
 import cbpapiers.app.cbpapiers.model.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

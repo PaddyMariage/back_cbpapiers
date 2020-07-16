@@ -1,6 +1,5 @@
 package cbpapiers.app.cbpapiers.dao;
 
-import cbpapiers.app.cbpapiers.model.Article;
 import cbpapiers.app.cbpapiers.model.Customer;
 import cbpapiers.app.cbpapiers.model.TopArticleCustomer;
 import cbpapiers.app.cbpapiers.model.pk.TopArticleCustomerPK;

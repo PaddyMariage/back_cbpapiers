@@ -28,7 +28,7 @@ public class OrderLine {
     @ManyToOne
     @MapsId("DO_PIECE")
     @JoinColumn(name = "DO_PIECE")
-    private Basket basket;
+    private Order order;
 
 
 

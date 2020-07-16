@@ -1,9 +1,7 @@
 package cbpapiers.app.cbpapiers.controller;
 
-import cbpapiers.app.cbpapiers.NotFoundException;
 import cbpapiers.app.cbpapiers.dao.OrderDAO;
 import cbpapiers.app.cbpapiers.dao.OrderLineDAO;
-import cbpapiers.app.cbpapiers.model.Order;
 import cbpapiers.app.cbpapiers.model.OrderLine;
 import cbpapiers.app.cbpapiers.model.pk.OrderLinePK;
 import org.springframework.http.ResponseEntity;

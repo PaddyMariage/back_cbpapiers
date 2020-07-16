@@ -43,7 +43,7 @@ public class Customer {
     private String email;
 
     @OneToMany(mappedBy = "customer")
-    private Set<Basket> baskets;
+    private Set<Order> orders;
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private CustomerPicture customerPicture;
