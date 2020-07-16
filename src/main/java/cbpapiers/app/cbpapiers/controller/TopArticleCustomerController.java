@@ -2,6 +2,7 @@ package cbpapiers.app.cbpapiers.controller;
 
 
 import cbpapiers.app.cbpapiers.dao.CustomerDAO;
+import cbpapiers.app.cbpapiers.dao.DiscountDAO;
 import cbpapiers.app.cbpapiers.dao.TopArticleCustomerDAO;
 import cbpapiers.app.cbpapiers.model.Article;
 import cbpapiers.app.cbpapiers.model.Customer;
@@ -25,6 +26,7 @@ public class TopArticleCustomerController {
 
     private TopArticleCustomerDAO topArticleCustomerDAO;
     private CustomerDAO customerDAO;
+    private DiscountDAO discountDAO;
 
     @Autowired
     public TopArticleCustomerController(TopArticleCustomerDAO topArticleCustomerDAO, CustomerDAO customerDAO) {
@@ -39,6 +41,11 @@ public class TopArticleCustomerController {
         if(customer!= null) {
             //List<Article> sortedArticleList = topArticleCustomerDAO.findByCustomer(customer);
             List<TopArticleCustomer> topArticleCustomerList = topArticleCustomerDAO.findAllByCustomer(customer);
+//            topArticleCustomerList.forEach(
+//                    article -> {
+//                        discountDAO.findbyId(topArticleCustomerList.)
+//                    }
+//            );
             // sort accordingly to compareTo defined in TopArticleCustomer ( by asc position )
             /*
             Collections.sort(topArticleCustomerList);

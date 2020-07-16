@@ -19,7 +19,7 @@ public class ArticleDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private int id;
 
     @OneToMany(mappedBy = "articleDetails")
     private Set<Article> article;
