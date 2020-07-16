@@ -79,20 +79,10 @@
 
     <profiles>
         <profile>
-            <id>justine</id>
+            <id>cbpapiersDevLocal</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <properties>
-                <db>cbpapiers</db>
-                <password></password>
-                <port>3306</port>
-                <secret>root123</secret>
-                <user>root</user>
-            </properties>
-        </profile>
-        <profile>
-            <id>cbpapiersDevLocal</id>
             <properties>
                 <server>localhost</server>
                 <db>cbpapiers</db>

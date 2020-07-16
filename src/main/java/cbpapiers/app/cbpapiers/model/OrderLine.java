@@ -18,13 +18,18 @@ public class OrderLine {
     @EmbeddedId
     private OrderLinePK orderLinePK;
 
+    private int quantity;
+
     @ManyToOne
-    @MapsId("idArticle")
+    @MapsId("AR_Ref")
+    @JoinColumn(name = "AR_Ref")
     private Article article;
 
     @ManyToOne
-    @MapsId("idOrder")
+    @MapsId("DO_PIECE")
+    @JoinColumn(name = "DO_PIECE")
     private Order order;
 
-    private int quantity;
+
+
 }

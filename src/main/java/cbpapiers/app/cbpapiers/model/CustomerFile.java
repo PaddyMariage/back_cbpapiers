@@ -1,6 +1,5 @@
 package cbpapiers.app.cbpapiers.model;
 
-import cbpapiers.app.cbpapiers.model.pk.DiscountPK;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,22 +12,17 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "F_ARTCLIENT")
-public class Discount {
+@Table(name = "CUSTOMER_FILES")
+public class CustomerFile {
 
-    @EmbeddedId
-    private DiscountPK discountPK;
-
-    @ManyToOne
-    @MapsId("AR_REF")
-    @JoinColumn(name = "AR_Ref")
-    private Article article;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     @ManyToOne
-    @MapsId("CT_NUM")
     @JoinColumn(name = "CT_NUM")
     private Customer customer;
 
-    @Column(name = "AR_remise")
-    private double discount;
+    // todo check which Java type translates to SQL BLOB type
+    private byte[] customerFile;
 }

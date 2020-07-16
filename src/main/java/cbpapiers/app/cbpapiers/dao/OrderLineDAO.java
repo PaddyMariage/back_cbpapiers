@@ -10,5 +10,6 @@ import java.util.List;
 
 @Repository
 public interface OrderLineDAO extends JpaRepository<OrderLine, OrderLinePK> {
+
     List<OrderLine> findAllByOrder(Order order);
 }

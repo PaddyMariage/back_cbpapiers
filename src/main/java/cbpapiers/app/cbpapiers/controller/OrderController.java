@@ -5,7 +5,6 @@ import cbpapiers.app.cbpapiers.NotFoundException;
 import cbpapiers.app.cbpapiers.dao.OrderDAO;
 import cbpapiers.app.cbpapiers.dao.OrderLineDAO;
 import cbpapiers.app.cbpapiers.model.Order;
-import cbpapiers.app.cbpapiers.model.OrderLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

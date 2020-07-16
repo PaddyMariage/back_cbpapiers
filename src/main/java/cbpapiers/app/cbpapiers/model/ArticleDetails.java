@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Set;
 
 
 @Getter
@@ -19,10 +20,9 @@ public class ArticleDetails {
     @Id
     private String id;
 
-    @OneToOne
-    @MapsId
-    private Article article;
+    @OneToMany(mappedBy = "articleDetails")
+    private Set<Article> article;
 
-    @Column(name = "article_details")
+    @Column(name = "AR_Details")
     private String description;
 }

@@ -1,12 +1,9 @@
 package cbpapiers.app.cbpapiers.controller;
 
-import cbpapiers.app.cbpapiers.NotFoundException;
 import cbpapiers.app.cbpapiers.dao.ArticleDetailsDAO;
 import cbpapiers.app.cbpapiers.model.ArticleDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin
 @RestController
