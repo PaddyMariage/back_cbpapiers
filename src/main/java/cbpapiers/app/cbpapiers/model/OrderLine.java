@@ -24,13 +24,13 @@ public class OrderLine {
     @JsonView(MyJsonView.OrderDetails.class)
     private int quantity;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.PERSIST)
     @MapsId("AR_Ref")
     @JoinColumn(name = "AR_Ref")
     @JsonView(MyJsonView.OrderDetails.class)
     private Article article;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.PERSIST)
     @MapsId("DO_PIECE")
     @JoinColumn(name = "DO_PIECE")
     private Order order;

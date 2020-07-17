@@ -8,6 +8,8 @@ import cbpapiers.app.cbpapiers.dao.OrderLineDAO;
 import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
 import cbpapiers.app.cbpapiers.model.Customer;
 import cbpapiers.app.cbpapiers.model.Order;
+import cbpapiers.app.cbpapiers.model.OrderLine;
+import cbpapiers.app.cbpapiers.model.pk.OrderLinePK;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -46,12 +48,24 @@ public class OrderController {
         return orderDao.findById(idOrder).orElseThrow(()-> new NotFoundException(idOrder,Order.class));
     }
 
+
     @PostMapping
-    public @ResponseBody Order createAnOrder(@RequestBody Order order) {
+    public @ResponseBody boolean createAnOrder(@RequestBody Order order) {
         if(order!=null){
-            return orderDao.save(order);
+//
+//            orderDao.saveAndFlush(order);
+            for (OrderLine orderLine : order.getOrderLines()) {
+                OrderLinePK cle = new OrderLinePK();
+                cle.setIdOrder(order.getOrderNumber());
+                cle.setIdArticle(orderLine.getArticle().getReference());
+                orderLine.setOrderLinePK(cle);
+                orderLine.setOrder(order);
+//                orderLineDAO.save(orderLine);
+            }
+            orderDao.save(order);
+            return true;
         } else{
-            return null;
+            return false;
         }
     }
 

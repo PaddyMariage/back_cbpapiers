@@ -20,14 +20,14 @@ public class Article {
 
     @Id
     @Column(name = "AR_Ref")
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class})
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class})
     private String reference;
 
     @Column(name = "AR_PrixVen")
     private double unitPrice;
 
     @Column(name = "AR_Design")
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class})
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class})
     private String label;
 
     @Column(name = "FA_CodeFamille")

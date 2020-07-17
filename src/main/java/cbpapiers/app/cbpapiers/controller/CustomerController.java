@@ -44,4 +44,13 @@ public class CustomerController {
         }
         return ResponseEntity.badRequest().body("There is no customer with id : " + id);
     }
+
+    @PostMapping
+    public @ResponseBody Customer createACustomer(@RequestBody Customer customer) {
+        if(customer!=null){
+            return customerDAO.save(customer);
+        } else{
+            return null;
+        }
+    }
 }
