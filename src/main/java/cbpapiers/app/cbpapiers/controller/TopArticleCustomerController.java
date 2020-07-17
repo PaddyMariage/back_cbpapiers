@@ -4,10 +4,12 @@ package cbpapiers.app.cbpapiers.controller;
 import cbpapiers.app.cbpapiers.dao.CustomerDAO;
 import cbpapiers.app.cbpapiers.dao.DiscountDAO;
 import cbpapiers.app.cbpapiers.dao.TopArticleCustomerDAO;
+import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
 import cbpapiers.app.cbpapiers.model.Article;
 import cbpapiers.app.cbpapiers.model.Customer;
 import cbpapiers.app.cbpapiers.model.TopArticleCustomer;
 import cbpapiers.app.cbpapiers.model.pk.TopArticleCustomerPK;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/top/customer")
+@RequestMapping("/toparticles/customer")
 public class TopArticleCustomerController {
 
     private TopArticleCustomerDAO topArticleCustomerDAO;
@@ -36,11 +38,13 @@ public class TopArticleCustomerController {
 
     // get top article for a customer
     @GetMapping("/{idCustomer}")
+    @JsonView(MyJsonView.TopArticleCustomer.class)
     public List<TopArticleCustomer> getTopArticleCustomer(@PathVariable String idCustomer){
         Customer customer = customerDAO.findById(idCustomer).orElse(null);
         if(customer!= null) {
             //List<Article> sortedArticleList = topArticleCustomerDAO.findByCustomer(customer);
-            List<TopArticleCustomer> topArticleCustomerList = topArticleCustomerDAO.findAllByCustomer(customer);
+//            List<TopArticleCustomer> topArticleCustomerList = topArticleCustomerDAO.findAllByCustomer(customer);
+            List<TopArticleCustomer> topArticleCustomerList = topArticleCustomerDAO.findAllByCustomerOrderByPosition(customer);
 //            topArticleCustomerList.forEach(
 //                    article -> {
 //                        discountDAO.findbyId(topArticleCustomerList.)

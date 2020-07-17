@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface TopArticleCustomerDAO extends JpaRepository<TopArticleCustomer, TopArticleCustomerPK> {
     List<TopArticleCustomer> findAllByCustomer(Customer customer);
+    List<TopArticleCustomer> findAllByCustomerOrderByPosition(Customer customer);
 }

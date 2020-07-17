@@ -6,4 +6,5 @@ public class MyJsonView {
     public static class OrderDetails{};
     public static class Customer{};
     public static class ArticleDetails{};
+    public static class TopArticleCustomer{};
 }

@@ -20,21 +20,21 @@ public class Article {
 
     @Id
     @Column(name = "AR_Ref")
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class})
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
     private String reference;
 
     @Column(name = "AR_PrixVen")
     private double unitPrice;
 
     @Column(name = "AR_Design")
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class})
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
     private String label;
 
     @Column(name = "FA_CodeFamille")
     private String family;
 
     @Transient
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class})
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.TopArticleCustomer.class})
     private double finalPrice;
 
     //ajout du fetch eager car erreur qui dit : failed to lazily initialize a collection of role : Article.orderLines quand on fait un findbyID
