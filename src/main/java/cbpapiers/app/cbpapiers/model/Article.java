@@ -19,7 +19,6 @@ import java.util.Set;
 public class Article {
 
     @Id
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class})
     @Column(name = "AR_Ref")
     @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
     private String reference;
@@ -28,7 +27,6 @@ public class Article {
     @Column(name = "AR_PrixVen")
     private double unitPrice;
 
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class})
     @Column(name = "AR_Design")
     @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
     private String label;

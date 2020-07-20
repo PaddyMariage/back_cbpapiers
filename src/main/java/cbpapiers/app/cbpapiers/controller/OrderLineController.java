@@ -35,6 +35,7 @@ public class OrderLineController {
         return ResponseEntity.notFound().build();
     }
 
+    // updates orderlines for a single order
     @PatchMapping(value = "/{idOrder}")
     public ResponseEntity updateOrder(@PathVariable String idOrder,@RequestBody Order order) {
         if(order != null){
