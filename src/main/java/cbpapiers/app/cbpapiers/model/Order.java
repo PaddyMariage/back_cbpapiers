@@ -22,9 +22,8 @@ public class Order {
 
     //on génère l'id simplement en attendant de pouvoir implémenter un custom generator
     @Id
-    @Column(name = "DO_PIECE")
     @JsonView({MyJsonView.Order.class,MyJsonView.OrderDetails.class})
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "DO_PIECE")
     private String orderNumber;
 
     @ManyToOne
@@ -32,11 +31,11 @@ public class Order {
     private Customer customer;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JsonView(MyJsonView.OrderDetails.class)
+    @JsonView({MyJsonView.OrderDetails.class})
     Set<OrderLine> orderLines;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
-    @JsonView({MyJsonView.Order.class,MyJsonView.OrderDetails.class})
+    @JsonView({MyJsonView.Order.class, MyJsonView.OrderDetails.class})
     private Date dateCommande;
 }

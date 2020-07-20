@@ -22,8 +22,8 @@ public class Customer {
     @Column(name = "CT_NUM")
     private String id;
 
-    @Column(name = "CT_Intitule")
     @JsonView(MyJsonView.Customer.class)
+    @Column(name = "CT_Intitule")
     private String name;
 
     private String password;
@@ -32,16 +32,24 @@ public class Customer {
 
     private boolean isActive;
 
+    @JsonView(MyJsonView.Customer.class)
     @Column(name = "CT_Adresse")
     private String address;
 
-    @Column(name = "CT_Telephone")
-    private String phoneNumber;
+    @JsonView(MyJsonView.Customer.class)
+    @Column(name = "CT_Pays")
+    private String country;
 
     @ManyToOne
+    @JsonView(MyJsonView.Customer.class)
     @JoinColumn(name = "id_city")
     private City city;
 
+    @JsonView(MyJsonView.Customer.class)
+    @Column(name = "CT_Telephone")
+    private String phoneNumber;
+
+    @JsonView(MyJsonView.Customer.class)
     @Column(name = "CT_EMail")
     private String email;
 
@@ -49,15 +57,19 @@ public class Customer {
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private Set<Order> orders;
 
+    @JsonView(MyJsonView.Customer.class)
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private CustomerPicture customerPicture;
 
-    @OneToMany(mappedBy = "customer")
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     Set<Discount> discount;
 
-    @OneToMany(mappedBy = "customer")
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     Set<TopArticleCustomer> topArticleCustomer;
 
-    @OneToMany(mappedBy = "customer")
+    @JsonView(MyJsonView.Customer.class)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     Set<CustomerFile> customerFiles;
 }

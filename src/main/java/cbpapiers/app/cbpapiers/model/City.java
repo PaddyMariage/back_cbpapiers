@@ -1,5 +1,7 @@
 package cbpapiers.app.cbpapiers.model;
 
+import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,9 +22,11 @@ public class City {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @JsonView(MyJsonView.Customer.class)
     @Column(name = "CT_Ville")
     private String name;
 
+    @JsonView(MyJsonView.Customer.class)
     @Column(name = "CT_CodePostal")
     private String postalCode;
 }

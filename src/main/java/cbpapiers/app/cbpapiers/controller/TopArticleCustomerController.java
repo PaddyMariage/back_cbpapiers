@@ -7,7 +7,9 @@ import cbpapiers.app.cbpapiers.dao.TopArticleCustomerDAO;
 import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
 import cbpapiers.app.cbpapiers.model.Article;
 import cbpapiers.app.cbpapiers.model.Customer;
+import cbpapiers.app.cbpapiers.model.Discount;
 import cbpapiers.app.cbpapiers.model.TopArticleCustomer;
+import cbpapiers.app.cbpapiers.model.pk.DiscountPK;
 import cbpapiers.app.cbpapiers.model.pk.TopArticleCustomerPK;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +44,38 @@ public class TopArticleCustomerController {
     public List<TopArticleCustomer> getTopArticleCustomer(@PathVariable String idCustomer){
         Customer customer = customerDAO.findById(idCustomer).orElse(null);
         if(customer!= null) {
-            //List<Article> sortedArticleList = topArticleCustomerDAO.findByCustomer(customer);
-//            List<TopArticleCustomer> topArticleCustomerList = topArticleCustomerDAO.findAllByCustomer(customer);
+
             List<TopArticleCustomer> topArticleCustomerList = topArticleCustomerDAO.findAllByCustomerOrderByPosition(customer);
-//            topArticleCustomerList.forEach(
-//                    article -> {
-//                        discountDAO.findbyId(topArticleCustomerList.)
-//                    }
-//            );
+            topArticleCustomerList.forEach(
+
+                    article -> {
+                        DiscountPK discountKey = new DiscountPK();
+                        discountKey.setIdArticle(article.getArticle().getReference());
+                        discountKey.setIdCustomer(article.getCustomer().getId());
+                        Discount discountInfos = discountDAO.findById(discountKey).orElse(null);
+
+                        if (discountInfos != null) {
+                            double discount = discountInfos.getDiscount();
+                            double clientPrice = discountInfos.getClientPrice();
+                            double finalPrice;
+
+                            if (discount != 0 && clientPrice != 0) {
+                                finalPrice = clientPrice * (1 - discount / 100);
+                                article.getArticle().setFinalPrice(finalPrice);
+
+                            } else if (discount == 0 && clientPrice != 0) {
+                                article.getArticle().setFinalPrice(clientPrice);
+
+                            } else if ( discount != 0 && clientPrice == 0) {
+                                finalPrice = article.getArticle().getUnitPrice() * (1 - discount / 100);
+                                article.getArticle().setFinalPrice(finalPrice);
+
+                            } else {
+                                article.getArticle().setFinalPrice(article.getArticle().getUnitPrice());
+                            }
+                        }
+                    }
+            );
             // sort accordingly to compareTo defined in TopArticleCustomer ( by asc position )
             /*
             Collections.sort(topArticleCustomerList);

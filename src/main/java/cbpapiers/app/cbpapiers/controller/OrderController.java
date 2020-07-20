@@ -6,7 +6,6 @@ import cbpapiers.app.cbpapiers.dao.CustomerDAO;
 import cbpapiers.app.cbpapiers.dao.OrderDAO;
 import cbpapiers.app.cbpapiers.dao.OrderLineDAO;
 import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
-import cbpapiers.app.cbpapiers.model.Customer;
 import cbpapiers.app.cbpapiers.model.Order;
 import cbpapiers.app.cbpapiers.model.OrderLine;
 import cbpapiers.app.cbpapiers.model.pk.OrderLinePK;
@@ -36,8 +35,6 @@ public class OrderController {
     @GetMapping("/history/{idCustomer}")
     @JsonView(MyJsonView.Order.class)
     public List<Order> getAllOrders(@PathVariable String idCustomer) {
-//        Customer customer = customerDAO.findById(idCustomer).orElseThrow(()->new NotFoundException(idCustomer, Customer.class));
-//        return orderDao.findAllByCustomer(customer);
         return orderDao.findAllByCustomerId(idCustomer);
     }
 
@@ -52,15 +49,12 @@ public class OrderController {
     @PostMapping
     public @ResponseBody boolean createAnOrder(@RequestBody Order order) {
         if(order!=null){
-//
-//            orderDao.saveAndFlush(order);
             for (OrderLine orderLine : order.getOrderLines()) {
                 OrderLinePK cle = new OrderLinePK();
                 cle.setIdOrder(order.getOrderNumber());
                 cle.setIdArticle(orderLine.getArticle().getReference());
                 orderLine.setOrderLinePK(cle);
                 orderLine.setOrder(order);
-//                orderLineDAO.save(orderLine);
             }
             orderDao.save(order);
             return true;

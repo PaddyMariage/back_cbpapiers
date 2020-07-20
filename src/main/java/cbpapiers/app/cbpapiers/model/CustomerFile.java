@@ -1,5 +1,7 @@
 package cbpapiers.app.cbpapiers.model;
 
+import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +19,7 @@ public class CustomerFile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(MyJsonView.Customer.class)
     private int id;
 
     @ManyToOne
@@ -24,5 +27,6 @@ public class CustomerFile {
     private Customer customer;
 
     // todo check which Java type translates to SQL BLOB type
+    @JsonView(MyJsonView.Customer.class)
     private byte[] customerFile;
 }
