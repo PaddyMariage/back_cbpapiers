@@ -33,9 +33,10 @@ public class TopArticleCustomerController {
     private DiscountDAO discountDAO;
 
     @Autowired
-    public TopArticleCustomerController(TopArticleCustomerDAO topArticleCustomerDAO, CustomerDAO customerDAO) {
+    public TopArticleCustomerController(TopArticleCustomerDAO topArticleCustomerDAO, CustomerDAO customerDAO, DiscountDAO discountDAO) {
         this.topArticleCustomerDAO = topArticleCustomerDAO;
         this.customerDAO = customerDAO;
+        this.discountDAO = discountDAO;
     }
 
     // get top article for a customer
@@ -48,10 +49,10 @@ public class TopArticleCustomerController {
             List<TopArticleCustomer> topArticleCustomerList = topArticleCustomerDAO.findAllByCustomerOrderByPosition(customer);
             topArticleCustomerList.forEach(
 
-                    article -> {
+                    topArticle -> {
                         DiscountPK discountKey = new DiscountPK();
-                        discountKey.setIdArticle(article.getArticle().getReference());
-                        discountKey.setIdCustomer(article.getCustomer().getId());
+                        discountKey.setIdArticle(topArticle.getArticle().getReference());
+                        discountKey.setIdCustomer(topArticle.getCustomer().getId());
                         Discount discountInfos = discountDAO.findById(discountKey).orElse(null);
 
                         if (discountInfos != null) {
@@ -60,19 +61,22 @@ public class TopArticleCustomerController {
                             double finalPrice;
 
                             if (discount != 0 && clientPrice != 0) {
+                                //pourquoi diviser par 100 ? remise en % ?
                                 finalPrice = clientPrice * (1 - discount / 100);
-                                article.getArticle().setFinalPrice(finalPrice);
+                                topArticle.getArticle().setFinalPrice(finalPrice);
 
                             } else if (discount == 0 && clientPrice != 0) {
-                                article.getArticle().setFinalPrice(clientPrice);
+                                topArticle.getArticle().setFinalPrice(clientPrice);
 
                             } else if ( discount != 0 && clientPrice == 0) {
-                                finalPrice = article.getArticle().getUnitPrice() * (1 - discount / 100);
-                                article.getArticle().setFinalPrice(finalPrice);
+                                finalPrice = topArticle.getArticle().getUnitPrice() * (1 - discount / 100);
+                                topArticle.getArticle().setFinalPrice(finalPrice);
 
                             } else {
-                                article.getArticle().setFinalPrice(article.getArticle().getUnitPrice());
+                                topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
                             }
+                        } else {
+                            topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
                         }
                     }
             );

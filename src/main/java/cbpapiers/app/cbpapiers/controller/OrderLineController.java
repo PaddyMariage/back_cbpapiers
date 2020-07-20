@@ -21,18 +21,33 @@ public class OrderLineController {
         this.orderDAO = orderDAO;
     }
 
-    @DeleteMapping(value = "/{idOrder}/{idArticle}")
-    public ResponseEntity deleteArticleOrder(@PathVariable String idOrder, @PathVariable String idArticle) {
+//    @DeleteMapping(value = "/{idOrder}/{idArticle}")
+//    public ResponseEntity deleteArticleOrder(@PathVariable String idOrder, @PathVariable String idArticle) {
+//        OrderLinePK orderLinePK = new OrderLinePK();
+//        orderLinePK.setIdArticle(idArticle);
+//        orderLinePK.setIdOrder(idOrder);
+//
+//        OrderLine orderLine = orderLineDAO.findById(orderLinePK).orElse(null);
+//        System.out.println(orderLine);
+//        if(orderLine!= null){
+//            orderLineDAO.delete(orderLine);
+//            return ResponseEntity.ok().build();
+//        }
+//        return ResponseEntity.notFound().build();
+//    }
+
+    @PostMapping(value = "/{idOrder}/{idArticle}")
+    public boolean deleteArticleOrder(@PathVariable String idOrder, @PathVariable String idArticle) {
         OrderLinePK orderLinePK = new OrderLinePK();
         orderLinePK.setIdArticle(idArticle);
         orderLinePK.setIdOrder(idOrder);
 
         OrderLine orderLine = orderLineDAO.findById(orderLinePK).orElse(null);
         if(orderLine!= null){
-            orderLineDAO.delete(orderLine);
-            return ResponseEntity.ok().build();
+            orderLineDAO.remove(idArticle, idOrder);
+            return true;
         }
-        return ResponseEntity.notFound().build();
+        return false;
     }
 
     // updates orderlines for a single order

@@ -54,7 +54,6 @@ public class OrderController {
                 cle.setIdOrder(order.getOrderNumber());
                 cle.setIdArticle(orderLine.getArticle().getReference());
                 orderLine.setOrderLinePK(cle);
-                orderLine.setOrder(order);
             }
             orderDao.save(order);
             return true;

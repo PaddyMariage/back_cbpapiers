@@ -35,6 +35,13 @@ public class OrderLine {
     @JoinColumn(name = "DO_PIECE")
     private Order order;
 
-
-
+    @Override
+    public String toString() {
+        return "OrderLine{" +
+                "orderLinePK=" + orderLinePK +
+                ", quantity=" + quantity +
+                ", article=" + article +
+                ", order=" + order +
+                '}';
+    }
 }
