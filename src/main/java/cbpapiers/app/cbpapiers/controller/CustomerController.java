@@ -1,6 +1,7 @@
 package cbpapiers.app.cbpapiers.controller;
 
 import cbpapiers.app.cbpapiers.Security.JwtUtil;
+import cbpapiers.app.cbpapiers.Security.MyUserDetails;
 import cbpapiers.app.cbpapiers.Security.MyUserDetailsService;
 import cbpapiers.app.cbpapiers.dao.CustomerDAO;
 import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -83,7 +83,7 @@ public class CustomerController {
         catch (BadCredentialsException e) {
             throw new Exception("Identifiant ou mot de passe incorrect", e);
         }
-        final UserDetails userDetails = userDetailsService
+        final MyUserDetails userDetails = (MyUserDetails) userDetailsService
                 .loadUserByUsername(customer.getId());
         return ResponseEntity.ok(jwtUtil.generateToken(userDetails));
     }

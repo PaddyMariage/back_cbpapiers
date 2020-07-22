@@ -33,17 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             http.csrf().disable()
                     .authorizeRequests()
                     //pour les requêtes qui seront uniquement accessibles avec un profil admin, il faudra ajouter /admin
-                    .antMatchers("/admin/**").hasRole("ADMIN")
-                    .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers("/authentification").permitAll()
-                    .antMatchers("/").permitAll()
-                    .antMatchers("/categories").permitAll()
-                    .antMatchers("/cities").permitAll()
-                    .antMatchers("/activities").permitAll()
-                    .antMatchers("/search").permitAll()
-                    //c'était pour générer une page de login, on va pas l'utiliser avec les tokens
-//                .and()
-//                .formLogin();
+                    .antMatchers("/customers/authentification").permitAll()
                     //on doit être authentifié pour faire une requête
                     .anyRequest().authenticated()
                     .and().exceptionHandling()
