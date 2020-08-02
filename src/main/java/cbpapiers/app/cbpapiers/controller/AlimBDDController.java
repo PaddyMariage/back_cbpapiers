@@ -224,9 +224,11 @@ public class AlimBDDController {
      *      Si oui, mettre à jour. Sauf que ça avait créé des soucis d'objets dans la session à un moment donné
      *      (les objets sont les mêmes avec 2 hashcode différents apparemment, et spring aime pas ça
      *      quand on manipule des bases de données).
+     *      error = a different object with the same identifier value was already associated with the session
      *
      * Fun facts: il y a 95 191 doclignes pour 11 628 commandes.
      * (92 052 doclignes pour 11 059 commandes de clients actifs)
+     * fini de tout ajouté en 1h 19 min 14.10s (à 01:30)
      */
 
     @PostMapping("/orders")
@@ -308,7 +310,8 @@ public class AlimBDDController {
 
                             // Ahem, j'écris ces commentaires pendant que ça enregistre les commandes (il est 00:47)
                             // je devrais ici être en train de parcourir le Set orderLines_sameDoPiece_NoDupe...
-                            // mais apparemment ça fonctionne aussi ainsi, pourquoi ? AUCUNE IDEE !
+                            // mais apparemment ça fonctionne aussi avec la liste qui a des dupes...
+                            // pourquoi ? AUCUNE IDEE !
                             // Avant de faire le NoDupe ça ne fonctionnait pas.
                             orderLines_sameDoPiece.forEach(
                                     orderLine -> {
