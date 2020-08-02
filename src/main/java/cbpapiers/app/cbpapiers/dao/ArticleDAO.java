@@ -8,4 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ArticleDAO extends JpaRepository<Article,String> {
+
 }

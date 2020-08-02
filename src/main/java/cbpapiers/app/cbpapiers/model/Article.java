@@ -23,16 +23,33 @@ public class Article {
     @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
     private String reference;
 
+    @Transient
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
+    private String AR_Ref;
+
     @JsonView({MyJsonView.Article.class, MyJsonView.ArticleDetails.class})
     @Column(name = "AR_PrixVen")
     private double unitPrice;
+
+    @Transient
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
+    private String AR_PrixVen;
 
     @Column(name = "AR_Design")
     @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
     private String label;
 
+    @Transient
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
+    private String AR_Design;
+
     @Column(name = "FA_CodeFamille")
     private String family;
+
+    @Transient
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
+    private String FA_CodeFamille;
+
 
     @Transient
     @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.TopArticleCustomer.class})
@@ -51,7 +68,15 @@ public class Article {
     private ArticlePicture articlePicture;
 
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
-    Set<Discount> discount;
+    Set<Discount> discounts;
 
-
+    @Override
+    public String toString() {
+        return "Article{" +
+                "reference='" + reference + '\'' +
+                ", unitPrice=" + unitPrice +
+                ", label='" + label + '\'' +
+                ", family='" + family + '\'' +
+                '}';
+    }
 }

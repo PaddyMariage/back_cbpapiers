@@ -81,12 +81,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- mail sender dependancy -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
@@ -101,6 +95,20 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
+        <!-- mail sender dependancy -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!--pdf generator dependency -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13.1</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>
@@ -130,6 +138,8 @@
                 <password>root</password>
                 <port>3309</port>
                 <secret>b69ae5b6660152494c2db0dd23a302508e9e70e5</secret>
+                <mail.username>adrien.fek@gmail.com</mail.username>
+                <mail.password>ameykorffybdespf</mail.password>
             </properties>
         </profile>
     </profiles>
