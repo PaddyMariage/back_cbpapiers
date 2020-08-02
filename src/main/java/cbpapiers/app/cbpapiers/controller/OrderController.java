@@ -86,7 +86,7 @@ public class OrderController {
 //        }
 //
 //        try {
-//            EmailServiceImpl emailService = new EmailServiceImpl(emailSender);
+//            EmailService emailService = new EmailServiceImpl(emailSender);
 //            String to = "adrien.fek@gmail.com";
 //            String subject = String.format("REF_CLIENT %s - Commande %s", order.getCustomer().getId(), order.getOrderNumber());
 //            String text = "yo, ça s'passe bien de ton côté ?";

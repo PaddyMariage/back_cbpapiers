@@ -138,8 +138,8 @@
                 <password>root</password>
                 <port>3309</port>
                 <secret>b69ae5b6660152494c2db0dd23a302508e9e70e5</secret>
-                <mail.username>adrien.fek@gmail.com</mail.username>
-                <mail.password>ameykorffybdespf</mail.password>
+                <mail.username>hahanope</mail.username>
+                <mail.password>hahanope</mail.password>
             </properties>
         </profile>
     </profiles>
