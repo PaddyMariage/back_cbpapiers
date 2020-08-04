@@ -64,14 +64,14 @@ public class AlimBDDController {
             // Si le customer n'est pas endormi (inactif) on va enregistrer la ville.
             if (customer.getCT_Sommeil() == 0) {
 
-                //si les 2 champs ne sont pas villes on crée et on ajoute une City à la liste.
+                // Si les 2 champs ne sont pas vides on crée et on ajoute une City à la liste.
                 if (!ville.equals("") && !cp.equals(""))
                     cities.add(new City(ville.toUpperCase().trim(), cp.trim()));
             }
         }
 
 
-        // On trie la liste (compareTo est définit dans la classe City, on trie par le nom de ville).
+        // On trie la liste (compareTo est défini dans la classe City, on trie par le nom de ville).
         cities.sort(City::compareTo);
 
         // On enlève les doublons
@@ -126,6 +126,9 @@ public class AlimBDDController {
                 // On .trim() pour enlever les espaces ou \n (retour à la ligne)
                 String ville = customer.getCT_Ville().toUpperCase().trim();
                 City city = cityDAO.findByName(ville).orElse(null);
+
+                // On associe cette ville trouvée (ou null) à notre customer pour
+                // la clé étrangère dans la BDD (ou l'absence de clé étrangère)
                 customer.setCity(city);
 
                 // Il ne reste plus qu'à enregistrer notre customer.
@@ -137,7 +140,8 @@ public class AlimBDDController {
         return true;
 
         // Cas intéressant, "MAIZIERE LES METZ" et "MAIZIERE LÈS METZ",
-        // il n'arrive pas à faire la différence, il sort donc 2 résultats au lieu d'un.
+        // il n'arrive pas à faire la différence, il sort donc 2 résultats au lieu d'un
+        // lors de la recherche de la ville. Du coup ça buggait.
         // J'ai donc supprimé MAIZIERE LÈS METZ de la BDD et corrigé dans le json
         // le seul customer avec l'accent sur le LÈS
     }
@@ -152,11 +156,22 @@ public class AlimBDDController {
     @PostMapping("/articles")
     public boolean addArticles(@RequestBody Article[] articles) {
 
+        // Je set ce que je peux set directement par correspondance
+        // entre le json (les transients) et nos propriétés (champs bdd).
+        // Je .toUpperCase() et .trim() partout car je suis devenu parano avec leur BDD.
         for (Article article : articles) {
             article.setReference(article.getAR_Ref().toUpperCase().trim());
             article.setLabel(article.getAR_Design().toUpperCase().trim());
             article.setFamily(article.getFA_CodeFamille().toUpperCase().trim());
-            article.setUnitPrice(Double.parseDouble(article.getAR_PrixVen().replace(",", ".")));
+
+            // Pour le prix faut parse en double, on récupère le prix en string, on remplace la virgule par un ..
+            article.setUnitPrice(
+                    Double.parseDouble(
+                            article.getAR_PrixVen().replace(",", ".")
+                    )
+            );
+
+            // J'enregistre les articles
             articleDAO.save(article);
         }
         return true;
@@ -178,21 +193,28 @@ public class AlimBDDController {
     @PostMapping("/artclients")
     public boolean addArtClients(@RequestBody Discount[] discounts) {
 
+        // Pour chaque ARTCLIENT (Discount) je récupère AR_Ref et CT_Num pour la clé composite
         for (Discount discount : discounts) {
             String AR_Ref = discount.getAR_Ref().toUpperCase().trim();
             String CT_Num = discount.getCT_Num().trim();
 
+            // Je recherche si CT_Num me retourne un customer de ma BDD
             Customer customer = customerDAO.findById(CT_Num).orElse(null);
 
+            // Si j'ai un retour autre que null, je crée et enregistre l'ARTCLIENT (Discount)
             if (customer != null) {
+
+                // Je crée et associe la clé composite
                 DiscountPK cle = new DiscountPK();
                 cle.setIdCustomer(CT_Num);
                 cle.setIdArticle(AR_Ref);
                 discount.setDiscountPK(cle);
 
+                // Pareil que précédemment je fait ce qu'il faut pour chopper les prix et remises
                 discount.setDiscount(Double.parseDouble(discount.getAC_Remise().replace(",", ".")));
                 discount.setClientPrice(Double.parseDouble(discount.getAC_PrixVen().replace(",", ".")));
 
+                // Je mets dans la BDD
                 discountDAO.save(discount);
             }
         }
