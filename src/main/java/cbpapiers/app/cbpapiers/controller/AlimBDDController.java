@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @CrossOrigin
@@ -64,14 +67,14 @@ public class AlimBDDController {
             // Si le customer n'est pas endormi (inactif) on va enregistrer la ville.
             if (customer.getCT_Sommeil() == 0) {
 
-                //si les 2 champs ne sont pas villes on crée et on ajoute une City à la liste.
+                // Si les 2 champs ne sont pas vides on crée et on ajoute une City à la liste.
                 if (!ville.equals("") && !cp.equals(""))
                     cities.add(new City(ville.toUpperCase().trim(), cp.trim()));
             }
         }
 
 
-        // On trie la liste (compareTo est définit dans la classe City, on trie par le nom de ville).
+        // On trie la liste (compareTo est défini dans la classe City, on trie par le nom de ville).
         cities.sort(City::compareTo);
 
         // On enlève les doublons
@@ -126,6 +129,9 @@ public class AlimBDDController {
                 // On .trim() pour enlever les espaces ou \n (retour à la ligne)
                 String ville = customer.getCT_Ville().toUpperCase().trim();
                 City city = cityDAO.findByName(ville).orElse(null);
+
+                // On associe cette ville trouvée (ou null) à notre customer pour
+                // la clé étrangère dans la BDD (ou l'absence de clé étrangère)
                 customer.setCity(city);
 
                 // Il ne reste plus qu'à enregistrer notre customer.
@@ -137,7 +143,8 @@ public class AlimBDDController {
         return true;
 
         // Cas intéressant, "MAIZIERE LES METZ" et "MAIZIERE LÈS METZ",
-        // il n'arrive pas à faire la différence, il sort donc 2 résultats au lieu d'un.
+        // il n'arrive pas à faire la différence, il sort donc 2 résultats au lieu d'un
+        // lors de la recherche de la ville. Du coup ça buggait.
         // J'ai donc supprimé MAIZIERE LÈS METZ de la BDD et corrigé dans le json
         // le seul customer avec l'accent sur le LÈS
     }
@@ -152,11 +159,22 @@ public class AlimBDDController {
     @PostMapping("/articles")
     public boolean addArticles(@RequestBody Article[] articles) {
 
+        // Je set ce que je peux set directement par correspondance
+        // entre le json (les transients) et nos propriétés (champs bdd).
+        // Je .toUpperCase() et .trim() partout car je suis devenu parano avec leur BDD.
         for (Article article : articles) {
             article.setReference(article.getAR_Ref().toUpperCase().trim());
             article.setLabel(article.getAR_Design().toUpperCase().trim());
             article.setFamily(article.getFA_CodeFamille().toUpperCase().trim());
-            article.setUnitPrice(Double.parseDouble(article.getAR_PrixVen().replace(",", ".")));
+
+            // Pour le prix faut parse en double, on récupère le prix en string, on remplace la virgule par un ..
+            article.setUnitPrice(
+                    Double.parseDouble(
+                            article.getAR_PrixVen().replace(",", ".")
+                    )
+            );
+
+            // J'enregistre les articles
             articleDAO.save(article);
         }
         return true;
@@ -178,21 +196,28 @@ public class AlimBDDController {
     @PostMapping("/artclients")
     public boolean addArtClients(@RequestBody Discount[] discounts) {
 
+        // Pour chaque ARTCLIENT (Discount) je récupère AR_Ref et CT_Num pour la clé composite
         for (Discount discount : discounts) {
             String AR_Ref = discount.getAR_Ref().toUpperCase().trim();
             String CT_Num = discount.getCT_Num().trim();
 
+            // Je recherche si CT_Num me retourne un customer de ma BDD
             Customer customer = customerDAO.findById(CT_Num).orElse(null);
 
+            // Si j'ai un retour autre que null, je crée et enregistre l'ARTCLIENT (Discount)
             if (customer != null) {
+
+                // Je crée et associe la clé composite
                 DiscountPK cle = new DiscountPK();
                 cle.setIdCustomer(CT_Num);
                 cle.setIdArticle(AR_Ref);
                 discount.setDiscountPK(cle);
 
+                // Pareil que précédemment je fait ce qu'il faut pour chopper les prix et remises
                 discount.setDiscount(Double.parseDouble(discount.getAC_Remise().replace(",", ".")));
                 discount.setClientPrice(Double.parseDouble(discount.getAC_PrixVen().replace(",", ".")));
 
+                // Je mets dans la BDD
                 discountDAO.save(discount);
             }
         }
@@ -204,28 +229,28 @@ public class AlimBDDController {
      * Donc tous les DO_PIECE auront le format MOBIX (X étant un nombre).
      * L'enregistrement des articles n'ayant pas fini, j'écris ça pendant que ça continue xd.
      * C'est accessoirement l'étape la plus difficile, en vrai.
-     *
+     * <p>
      * Les pièges sont multiples :
-     *      - AR_Ref = "" <-> DL_Qte (quantité) = 0
-     *
-     *      - DL_Qte = un double. Je déconne pas, y'a des 0,5, même des 0,1 qui traînent
-     *      Au choix je pouvais mettre notre variable quantity en tant que double ou
-     *      si je reçois un double je le mets à 1. J'ai choisi de mettre à 1.
-     *
-     *      - CT_Num = ""
-     *
-     *      - 2 orderLines sont identiques sauf la qté.
-     *      Oui, y'a le même DO_Piece, date, CT_Num, AR_Ref, juste la qté change.
-     *      Ca crée des problèmes pour l'enregistrement à cause de notre clé composite "limitée" à 2 items.
-     *
-     *      - Ma première méthode (voir le bousin qui est commenté au-dessous de addOrders)
-     *      utilisait DO_Piece comme id de commande (pour me simplifier la vie),
-     *      mais elle demandait aussi à chaque orderLine de vérifier si la commande associée existe déjà.
-     *      Si oui, mettre à jour. Sauf que ça avait créé des soucis d'objets dans la session à un moment donné
-     *      (les objets sont les mêmes avec 2 hashcode différents apparemment, et spring aime pas ça
-     *      quand on manipule des bases de données).
-     *      error = a different object with the same identifier value was already associated with the session
-     *
+     * - AR_Ref = "" <-> DL_Qte (quantité) = 0
+     * <p>
+     * - DL_Qte = un double. Je déconne pas, y'a des 0,5, même des 0,1 qui traînent
+     * Au choix je pouvais mettre notre variable quantity en tant que double ou
+     * si je reçois un double je le mets à 1. J'ai choisi de mettre à 1.
+     * <p>
+     * - CT_Num = ""
+     * <p>
+     * - 2 orderLines sont identiques sauf la qté.
+     * Oui, y'a le même DO_Piece, date, CT_Num, AR_Ref, juste la qté change.
+     * Ca crée des problèmes pour l'enregistrement à cause de notre clé composite "limitée" à 2 items.
+     * <p>
+     * - Ma première méthode (voir le bousin qui est commenté au-dessous de addOrders)
+     * utilisait DO_Piece comme id de commande (pour me simplifier la vie),
+     * mais elle demandait aussi à chaque orderLine de vérifier si la commande associée existe déjà.
+     * Si oui, mettre à jour. Sauf que ça avait créé des soucis d'objets dans la session à un moment donné
+     * (les objets sont les mêmes avec 2 hashcode différents apparemment, et spring aime pas ça
+     * quand on manipule des bases de données).
+     * error = a different object with the same identifier value was already associated with the session
+     * <p>
      * Fun facts: il y a 95 191 doclignes pour 11 628 commandes.
      * (92 052 doclignes pour 11 059 commandes de clients actifs)
      * fini de tout ajouté en 1h 19 min 14.10s (à 01:30)
@@ -338,6 +363,52 @@ public class AlimBDDController {
         );
 
 
+        return true;
+    }
+
+    @PostMapping("/test")
+    public boolean checkPrix(@RequestBody Doclignes[] docs) {
+        int counterOfSamePrice = 0;
+        int counterOfArRef = 0;
+        double prix = 0d;
+        System.out.println(docs.length);
+        for (Doclignes doc : docs) {
+            Customer customer = customerDAO.findById(doc.getCT_Num().toUpperCase().trim()).orElse(null);
+            if (customer != null) {
+                for (Discount discount : customer.getDiscount()) {
+                    discount.getArticle().setFinalPrice();
+                }
+            }
+            if (doc.getAR_Ref().equals("")) {
+                counterOfArRef++;
+            } else {
+                counterOfSamePrice++;
+            }
+        }
+
+        System.out.println("nombre de AR_Ref vides : " + counterOfArRef +
+                "\nnombre de AR_Ref non vides : " + counterOfSamePrice +
+                "\nnombre de doclignes : " + docs.length +
+                "\ntotal vide+nonvide : " + (counterOfArRef+counterOfSamePrice));
+
+//        for (Doclignes doc : docs) {
+//            for (Article article : articles) {
+//                if (doc.getAR_Ref().equals(""))
+//                   break;
+//                else if (doc.getAR_Ref().toUpperCase().trim().equals(article.getReference())) {
+//                    counterOfArRef++;
+//                    prix = Double.parseDouble(doc.getDL_PrixUnitaire().replace(",", "."));
+//                    if (prix == article.getUnitPrice()) {
+//                        counterOfSamePrice++;
+//                    }
+//                    break;
+//                }
+//            }
+//        }
+
+//        System.out.println("résultat final:\nnombre d'articles : " + articles.size() +
+//                "\nnombre de match sur AR_Ref : " + counterOfArRef +
+//                "\nnombre de match sur le prix : " + counterOfSamePrice);
         return true;
     }
 
