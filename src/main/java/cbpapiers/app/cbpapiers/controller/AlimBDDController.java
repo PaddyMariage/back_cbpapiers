@@ -370,13 +370,11 @@ public class AlimBDDController {
     public boolean checkPrix(@RequestBody Doclignes[] docs) {
         int counterOfSamePrice = 0;
         int counterOfArRef = 0;
-        double prix = 0d;
         System.out.println(docs.length);
         for (Doclignes doc : docs) {
             Customer customer = customerDAO.findById(doc.getCT_Num().toUpperCase().trim()).orElse(null);
             if (customer != null) {
                 for (Discount discount : customer.getDiscount()) {
-                    discount.getArticle().setFinalPrice();
                 }
             }
             if (doc.getAR_Ref().equals("")) {
