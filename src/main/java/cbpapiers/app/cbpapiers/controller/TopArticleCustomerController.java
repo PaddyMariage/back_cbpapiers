@@ -66,72 +66,40 @@ public class TopArticleCustomerController {
 
 
     private List<TopArticleCustomer> calculateFinalPrices(List<TopArticleCustomer> topArticlesCustomer, String customerId) {
-//        List<Discount> discounts = discountDAO.findAllByCustomerId(customerId).orElse(null);
+        List<Discount> discounts = discountDAO.findAllByCustomerId(customerId).orElse(null);
         topArticlesCustomer.forEach(
 
                 topArticle -> {
+                    if (discounts != null) {
 
-//                    if (discounts != null) {
-//                        for (Discount discount : discounts) {
-//                            if (discount.getArticle() == topArticle.getArticle()) {
-//                                final double remise = discount.getDiscount();
-//                                final double clientPrice = discount.getClientPrice();
-//                                double finalPrice;
-//                                if (remise != 0 && clientPrice != 0) {
-//                                    //pourquoi diviser par 100 ? remise en % ?
-//                                    finalPrice = clientPrice * (1 - remise / 100);
-//                                    topArticle.getArticle().setFinalPrice(finalPrice);
-//
-//                                } else if (remise == 0 && clientPrice != 0) {
-//                                    topArticle.getArticle().setFinalPrice(clientPrice);
-//
-//                                } else if (remise != 0 && clientPrice == 0) {
-//                                    finalPrice = topArticle.getArticle().getUnitPrice() * (1 - remise / 100);
-//                                    topArticle.getArticle().setFinalPrice(finalPrice);
-//
-//                                } else {
-//                                    topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
-//                                }
-//                            } else {
-//                                topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
-//                            }
-//                            break;
-//                        }
-//                    }
-//                });
+                        for (Discount discount : discounts) {
 
-//                        }
-                        DiscountPK discountKey = new DiscountPK();
-                        discountKey.setIdArticle(topArticle.getArticle().getReference());
-                        discountKey.setIdCustomer(topArticle.getCustomer().getId());
-                        Discount discountInfos = discountDAO.findById(discountKey).orElse(null);
+                            if (discount.getArticle() == topArticle.getArticle()) {
+                                final double remise = discount.getDiscount();
+                                final double clientPrice = discount.getClientPrice();
+                                double finalPrice;
+                                if (remise != 0 && clientPrice != 0) {
+                                    //pourquoi diviser par 100 ? remise en % ?
+                                    finalPrice = clientPrice * (1 - remise / 100);
+                                    topArticle.getArticle().setFinalPrice(finalPrice);
 
-                        if (discountInfos != null) {
-                            double discount = discountInfos.getDiscount();
-                            double clientPrice = discountInfos.getClientPrice();
-                            double finalPrice;
+                                } else if (remise == 0 && clientPrice != 0) {
+                                    topArticle.getArticle().setFinalPrice(clientPrice);
 
-                            if (discount != 0 && clientPrice != 0) {
-                                //pourquoi diviser par 100 ? remise en % ?
-                                finalPrice = clientPrice * (1 - discount / 100);
-                                topArticle.getArticle().setFinalPrice(finalPrice);
+                                } else if (remise != 0 && clientPrice == 0) {
+                                    finalPrice = topArticle.getArticle().getUnitPrice() * (1 - remise / 100);
+                                    topArticle.getArticle().setFinalPrice(finalPrice);
 
-                            } else if (discount == 0 && clientPrice != 0) {
-                                topArticle.getArticle().setFinalPrice(clientPrice);
-
-                            } else if (discount != 0 && clientPrice == 0) {
-                                finalPrice = topArticle.getArticle().getUnitPrice() * (1 - discount / 100);
-                                topArticle.getArticle().setFinalPrice(finalPrice);
-
+                                } else {
+                                    topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
+                                }
                             } else {
                                 topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
                             }
-                        } else {
-                            topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
+                            break;
                         }
                     }
-        );
-
+                });
         return topArticlesCustomer;
     }
 
@@ -143,28 +111,18 @@ public class TopArticleCustomerController {
             for (OrderLine orderLine : order.getOrderLines()) {
                 Article article = orderLine.getArticle();
 
-                // la fonction dit qu'il faut aller regarder dans lemap à la clé
-                // article, si une valeur y est présente, elle ne fait rien
-                // dans le cas où ça retourne un null, ça ajoute l'article avec un 1.
-                // si l'article est présent dans le HashMap, ça ne fait rien, s'il n'est pas présent
-                // ça enregistre l'article et la valeur 1 (première fois qu'on le rencontre)
-                articleAndFrequency.putIfAbsent(article, 1);
-
-                if (articleAndFrequency.get(article) != null)
-                    articleAndFrequency.put(article, articleAndFrequency.get(article) + 1);
+               // une fonction pour dire :
+                // si article (la clé) n'est pas dans le map, l'ajouter et y associer la valeur (quantité) 1.
+                // c'est donc la première fois qu'on rencontre cet article.
+                // si l'article (la clé) y est déjà, augmenter la valeur (quantité) de 1.
+                articleAndFrequency.merge(article, 1, Integer::sum);
             }
         }
-        System.out.println("it's time to sort that fucker out");
         Set<Map.Entry<Article, Integer>> entries = articleAndFrequency.entrySet();
-        Comparator<Map.Entry<Article, Integer>> valueComparator = new Comparator<Map.Entry<Article, Integer>>() {
-            @Override
-            public int compare(Map.Entry<Article, Integer> o1, Map.Entry<Article, Integer> o2) {
-                return o2.getValue() - o1.getValue();
-            }
-        };
+        Comparator<Map.Entry<Article, Integer>> valueComparator = (o1, o2) -> o2.getValue() - o1.getValue();
 
         List<Map.Entry<Article, Integer>> sortedList = new ArrayList<>(entries);
-        Collections.sort(sortedList, valueComparator);
+        sortedList.sort(valueComparator);
 
         List<TopArticleCustomer> topArticlesCustomer = new ArrayList<>();
 
