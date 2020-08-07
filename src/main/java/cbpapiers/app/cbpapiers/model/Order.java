@@ -36,10 +36,6 @@ public class Order {
     @JsonView({MyJsonView.Order.class, MyJsonView.OrderDetails.class})
     private Customer customer;
 
-/*    @JsonView({MyJsonView.Order.class, MyJsonView.OrderDetails.class})
-    @Column(name = "DL_RetraitEntrepot")
-    private int WarehouseRetrieval;*/
-
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JsonView({MyJsonView.Order.class, MyJsonView.OrderDetails.class})
     Set<OrderLine> orderLines;

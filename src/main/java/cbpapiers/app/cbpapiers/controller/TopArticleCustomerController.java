@@ -63,20 +63,20 @@ public class TopArticleCustomerController {
                             if (discount != 0 && clientPrice != 0) {
                                 //pourquoi diviser par 100 ? remise en % ?
                                 finalPrice = clientPrice * (1 - discount / 100);
-                                topArticle.getArticle().setUnitPrice(finalPrice);
+                                topArticle.getArticle().setFinalPrice(finalPrice);
 
                             } else if (discount == 0 && clientPrice != 0) {
-                                topArticle.getArticle().setUnitPrice(clientPrice);
+                                topArticle.getArticle().setFinalPrice(clientPrice);
 
                             } else if ( discount != 0 && clientPrice == 0) {
                                 finalPrice = topArticle.getArticle().getUnitPrice() * (1 - discount / 100);
-                                topArticle.getArticle().setUnitPrice(finalPrice);
+                                topArticle.getArticle().setFinalPrice(finalPrice);
 
                             } else {
-                                topArticle.getArticle().setUnitPrice(topArticle.getArticle().getUnitPrice());
+                                topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
                             }
                         } else {
-                            topArticle.getArticle().setUnitPrice(topArticle.getArticle().getUnitPrice());
+                            topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
                         }
                     }
             );

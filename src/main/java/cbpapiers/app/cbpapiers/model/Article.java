@@ -23,9 +23,6 @@ public class Article {
     @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
     private String reference;
 
-    @Transient
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
-    private String AR_Ref;
 
     @JsonView({MyJsonView.Article.class, MyJsonView.ArticleDetails.class})
     @Column(name = "AR_PrixVen")
@@ -39,17 +36,8 @@ public class Article {
     @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
     private String label;
 
-    @Transient
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
-    private String AR_Design;
-
     @Column(name = "FA_CodeFamille")
     private String family;
-
-    @Transient
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
-    private String FA_CodeFamille;
-
 
     @Transient
     @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.TopArticleCustomer.class})
