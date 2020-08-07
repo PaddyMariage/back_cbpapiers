@@ -18,6 +18,12 @@ import javax.persistence.*;
 @Table(name = "TOP_ARTICLE")
 public class TopArticleCustomer implements Comparable {
 
+    public TopArticleCustomer(Article article, int position, int quantity) {
+        this.article = article;
+        this.position = position;
+        this.quantity = quantity;
+    }
+
     @EmbeddedId
     private TopArticleCustomerPK topArticleCustomerPK;
 
@@ -34,6 +40,10 @@ public class TopArticleCustomer implements Comparable {
 
     @JsonView(MyJsonView.TopArticleCustomer.class)
     private int position;
+
+    @Transient
+    @JsonView(MyJsonView.TopArticleCustomer.class)
+    private int quantity;
 
     @Override
     public int compareTo(Object top) {
