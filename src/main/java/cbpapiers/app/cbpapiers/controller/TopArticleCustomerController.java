@@ -66,40 +66,72 @@ public class TopArticleCustomerController {
 
 
     private List<TopArticleCustomer> calculateFinalPrices(List<TopArticleCustomer> topArticlesCustomer, String customerId) {
-        List<Discount> discounts = discountDAO.findAllByCustomerId(customerId).orElse(null);
+//        List<Discount> discounts = discountDAO.findAllByCustomerId(customerId).orElse(null);
         topArticlesCustomer.forEach(
 
                 topArticle -> {
-                    if (discounts != null) {
 
-                        for (Discount discount : discounts) {
+//                    if (discounts != null) {
+//                        for (Discount discount : discounts) {
+//                            if (discount.getArticle() == topArticle.getArticle()) {
+//                                final double remise = discount.getDiscount();
+//                                final double clientPrice = discount.getClientPrice();
+//                                double finalPrice;
+//                                if (remise != 0 && clientPrice != 0) {
+//                                    //pourquoi diviser par 100 ? remise en % ?
+//                                    finalPrice = clientPrice * (1 - remise / 100);
+//                                    topArticle.getArticle().setFinalPrice(finalPrice);
+//
+//                                } else if (remise == 0 && clientPrice != 0) {
+//                                    topArticle.getArticle().setFinalPrice(clientPrice);
+//
+//                                } else if (remise != 0 && clientPrice == 0) {
+//                                    finalPrice = topArticle.getArticle().getUnitPrice() * (1 - remise / 100);
+//                                    topArticle.getArticle().setFinalPrice(finalPrice);
+//
+//                                } else {
+//                                    topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
+//                                }
+//                            } else {
+//                                topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
+//                            }
+//                            break;
+//                        }
+//                    }
+//                });
 
-                            if (discount.getArticle() == topArticle.getArticle()) {
-                                final double remise = discount.getDiscount();
-                                final double clientPrice = discount.getClientPrice();
-                                double finalPrice;
-                                if (remise != 0 && clientPrice != 0) {
-                                    //pourquoi diviser par 100 ? remise en % ?
-                                    finalPrice = clientPrice * (1 - remise / 100);
-                                    topArticle.getArticle().setFinalPrice(finalPrice);
+//                        }
+                        DiscountPK discountKey = new DiscountPK();
+                        discountKey.setIdArticle(topArticle.getArticle().getReference());
+                        discountKey.setIdCustomer(topArticle.getCustomer().getId());
+                        Discount discountInfos = discountDAO.findById(discountKey).orElse(null);
 
-                                } else if (remise == 0 && clientPrice != 0) {
-                                    topArticle.getArticle().setFinalPrice(clientPrice);
+                        if (discountInfos != null) {
+                            double discount = discountInfos.getDiscount();
+                            double clientPrice = discountInfos.getClientPrice();
+                            double finalPrice;
 
-                                } else if (remise != 0 && clientPrice == 0) {
-                                    finalPrice = topArticle.getArticle().getUnitPrice() * (1 - remise / 100);
-                                    topArticle.getArticle().setFinalPrice(finalPrice);
+                            if (discount != 0 && clientPrice != 0) {
+                                //pourquoi diviser par 100 ? remise en % ?
+                                finalPrice = clientPrice * (1 - discount / 100);
+                                topArticle.getArticle().setFinalPrice(finalPrice);
 
-                                } else {
-                                    topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
-                                }
+                            } else if (discount == 0 && clientPrice != 0) {
+                                topArticle.getArticle().setFinalPrice(clientPrice);
+
+                            } else if (discount != 0 && clientPrice == 0) {
+                                finalPrice = topArticle.getArticle().getUnitPrice() * (1 - discount / 100);
+                                topArticle.getArticle().setFinalPrice(finalPrice);
+
                             } else {
                                 topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
                             }
-                            break;
+                        } else {
+                            topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
                         }
                     }
-                });
+        );
+
         return topArticlesCustomer;
     }
 
@@ -128,8 +160,7 @@ public class TopArticleCustomerController {
 
         for (Map.Entry<Article, Integer> articleIntegerEntry : sortedList) {
             topArticlesCustomer.add(new TopArticleCustomer(articleIntegerEntry.getKey(),
-                    sortedList.indexOf(articleIntegerEntry) + 1,
-                    articleIntegerEntry.getValue()));
+                    sortedList.indexOf(articleIntegerEntry) + 1));
         }
 
         return topArticlesCustomer;

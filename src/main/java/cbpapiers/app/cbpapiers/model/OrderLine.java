@@ -24,18 +24,18 @@ public class OrderLine {
 
 
     @Transient
-    @JsonView(MyJsonView.OrderDetails.class)
+    @JsonView({MyJsonView.OrderDetails.class,MyJsonView.Order.class})
     private String DO_Piece;
 
 
-    @JsonView(MyJsonView.OrderDetails.class)
+    @JsonView({MyJsonView.OrderDetails.class,MyJsonView.Order.class})
     private int quantity;
 
 
     @ManyToOne (cascade = CascadeType.PERSIST)
     @MapsId("AR_Ref")
     @JoinColumn(name = "AR_Ref")
-    @JsonView(MyJsonView.OrderDetails.class)
+    @JsonView({MyJsonView.OrderDetails.class,MyJsonView.Order.class})
     private Article article;
 
     @ManyToOne (cascade = CascadeType.PERSIST)

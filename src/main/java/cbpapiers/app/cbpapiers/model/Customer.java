@@ -55,8 +55,7 @@ public class Customer {
     private String email;
 
     //ajout d'un fectheager nécessaire pour récupérer l'historique des commandes d'un client
-    @JsonView(MyJsonView.Customer.class)
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer")
     private Set<Order> orders;
 
     @JsonView(MyJsonView.Customer.class)
@@ -64,15 +63,15 @@ public class Customer {
     private CustomerPicture customerPicture;
 
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer")
     Set<Discount> discount;
 
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer")
     Set<TopArticleCustomer> topArticleCustomer;
 
     @JsonView(MyJsonView.Customer.class)
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer")
     Set<CustomerFile> customerFiles;
 
 

@@ -23,14 +23,9 @@ public class Article {
     @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
     private String reference;
 
-
     @JsonView({MyJsonView.Article.class, MyJsonView.ArticleDetails.class})
     @Column(name = "AR_PrixVen")
     private double unitPrice;
-
-    @Transient
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
-    private String AR_PrixVen;
 
     @Column(name = "AR_Design")
     @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
@@ -44,7 +39,7 @@ public class Article {
     private double finalPrice;
 
     //ajout du fetch eager car erreur qui dit : failed to lazily initialize a collection of role : Article.orderLines quand on fait un findbyID
-    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "article")
     Set<OrderLine> orderLines;
 
     @ManyToOne
@@ -55,7 +50,7 @@ public class Article {
     @JoinColumn(name = "id_picture")
     private ArticlePicture articlePicture;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "article")
     Set<Discount> discounts;
 
     @Override
