@@ -20,7 +20,7 @@ public class Article {
 
     @Id
     @Column(name = "AR_Ref")
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class, MyJsonView.Order.class})
     private String reference;
 
     @JsonView({MyJsonView.Article.class, MyJsonView.ArticleDetails.class})
@@ -28,14 +28,14 @@ public class Article {
     private double unitPrice;
 
     @Column(name = "AR_Design")
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class})
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.ArticleDetails.class, MyJsonView.TopArticleCustomer.class, MyJsonView.Order.class})
     private String label;
 
     @Column(name = "FA_CodeFamille")
     private String family;
 
     @Transient
-    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.TopArticleCustomer.class})
+    @JsonView({MyJsonView.Article.class,MyJsonView.OrderDetails.class, MyJsonView.TopArticleCustomer.class, MyJsonView.Order.class})
     private double finalPrice;
 
     //ajout du fetch eager car erreur qui dit : failed to lazily initialize a collection of role : Article.orderLines quand on fait un findbyID

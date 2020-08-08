@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService {
-
-    private CustomerDAO customerDAO;
+     private CustomerDAO customerDAO;
 
     @Autowired
     public MyUserDetailsService(CustomerDAO customerDAO) {

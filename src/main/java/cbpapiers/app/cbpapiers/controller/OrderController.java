@@ -53,9 +53,10 @@ public class OrderController {
     }
 
 
+    // @Adrien j'ai changé le RequestBody en ORDER regarde si ca parait ok pour toi ou sinon bah tu peux m'insulter^^
     @PostMapping({"/customerId"})
     public @ResponseBody
-    boolean createAnOrder(@PathVariable String customerId, @RequestBody OrderLine[] orderLines) {
+    boolean createAnOrder(@PathVariable String customerId, @RequestBody Order order) {
 //        try {
 //            //create pdf
 //            Document document = new Document();
@@ -98,12 +99,12 @@ public class OrderController {
 //        }
 
         try {
-            Order order = new Order();
+//            Order order = new Order();
             order.setCustomer(customerDAO.findById(customerId).orElse(null));
             orderDao.saveAndFlush(order);
 
-            if (orderLines != null) {
-                for (OrderLine orderLine : orderLines) {
+            if (order != null) {
+                for (OrderLine orderLine : order.getOrderLines()) {
                     OrderLinePK cle = new OrderLinePK();
                     cle.setIdOrder(order.getOrderNumber());
                     cle.setIdArticle(orderLine.getArticle().getReference());

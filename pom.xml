@@ -142,6 +142,24 @@
                 <mail.password>hahanope</mail.password>
             </properties>
         </profile>
+
+        <profile>
+            <id>justine</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <server>localhost</server>
+                <db>cbpapiers</db>
+                <username>root</username>
+                <config>?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</config>
+                <password></password>
+                <port>3306</port>
+                <secret>b69ae5b6660152494c2db0dd23a302508e9e70e5</secret>
+                <mail.username>hahanope</mail.username>
+                <mail.password>hahanope</mail.password>
+            </properties>
+        </profile>
     </profiles>
 
     <build>
