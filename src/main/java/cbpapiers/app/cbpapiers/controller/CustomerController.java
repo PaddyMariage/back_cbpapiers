@@ -28,9 +28,9 @@ public class CustomerController {
 
     @Autowired
     public CustomerController(CustomerDAO customerDAO,
-            AuthenticationManager authenticationManager,
-            MyUserDetailsService  userDetailsService,
-            JwtUtil jwtUtil) {
+                              AuthenticationManager authenticationManager,
+                              MyUserDetailsService userDetailsService,
+                              JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
@@ -65,10 +65,11 @@ public class CustomerController {
     }
 
     @PostMapping
-    public @ResponseBody Customer createACustomer(@RequestBody Customer customer) {
-        if(customer!=null){
+    public @ResponseBody
+    Customer createACustomer(@RequestBody Customer customer) {
+        if (customer != null) {
             return customerDAO.save(customer);
-        } else{
+        } else {
             return null;
         }
     }
@@ -79,8 +80,7 @@ public class CustomerController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             customer.getId(), customer.getPassword()));
-        }
-        catch (BadCredentialsException e) {
+        } catch (BadCredentialsException e) {
             throw new Exception("Identifiant ou mot de passe incorrect", e);
         }
         final MyUserDetails userDetails = (MyUserDetails) userDetailsService

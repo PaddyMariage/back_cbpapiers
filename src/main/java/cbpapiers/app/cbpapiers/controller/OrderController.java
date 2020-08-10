@@ -19,8 +19,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 @CrossOrigin
@@ -54,7 +57,7 @@ public class OrderController {
 
 
     // @Adrien j'ai changé le RequestBody en ORDER regarde si ca parait ok pour toi ou sinon bah tu peux m'insulter^^
-    @PostMapping({"/customerId"})
+    @PostMapping("/{customerId}")
     public @ResponseBody
     boolean createAnOrder(@PathVariable String customerId, @RequestBody Order order) {
 //        try {
@@ -101,9 +104,12 @@ public class OrderController {
         try {
 //            Order order = new Order();
             order.setCustomer(customerDAO.findById(customerId).orElse(null));
+            Set<OrderLine> orderLinesBackup = new HashSet<>(order.getOrderLines());
+            order.setOrderLines(null);
             orderDao.saveAndFlush(order);
+            order.setOrderLines(orderLinesBackup);
 
-            if (order != null) {
+            if (order.getOrderLines() != null) {
                 for (OrderLine orderLine : order.getOrderLines()) {
                     OrderLinePK cle = new OrderLinePK();
                     cle.setIdOrder(order.getOrderNumber());
@@ -113,10 +119,10 @@ public class OrderController {
                 orderDao.save(order);
             }
             return true;
-        }  catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     private void addTableHeader(PdfPTable table) {

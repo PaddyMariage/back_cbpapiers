@@ -22,15 +22,8 @@ public class OrderLine {
     @JsonView(MyJsonView.OrderDetails.class)
     private OrderLinePK orderLinePK;
 
-
-    @Transient
-    @JsonView({MyJsonView.OrderDetails.class,MyJsonView.Order.class})
-    private String DO_Piece;
-
-
     @JsonView({MyJsonView.OrderDetails.class,MyJsonView.Order.class})
     private int quantity;
-
 
     @ManyToOne (cascade = CascadeType.PERSIST)
     @MapsId("AR_Ref")
