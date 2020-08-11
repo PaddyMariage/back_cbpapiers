@@ -49,7 +49,6 @@ public class Article {
             MyJsonView.TopArticleCustomer.class})
     private double finalPrice;
 
-    //ajout du fetch eager car erreur qui dit : failed to lazily initialize a collection of role : Article.orderLines quand on fait un findbyID
     @OneToMany(mappedBy = "article")
     Set<OrderLine> orderLines;
 

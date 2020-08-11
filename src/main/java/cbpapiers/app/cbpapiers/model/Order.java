@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.apachecommons.CommonsLog;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -36,11 +37,12 @@ public class Order {
     private Customer customer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.MERGE)
-    @JsonView({MyJsonView.Order.class, MyJsonView.OrderDetails.class})
+    @JsonView(MyJsonView.Order.class)
     Set<OrderLine> orderLines;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     @JsonView({MyJsonView.Order.class, MyJsonView.OrderDetails.class})
-    private Date dateCommande;
+    @Column(name = "dateCommande")
+    private Date orderDate;
 }

@@ -14,13 +14,12 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import java.util.Set;
@@ -33,12 +32,14 @@ public class OrderController {
     private OrderDAO orderDao;
     private CustomerDAO customerDAO;
     private JavaMailSender emailSender;
+    private OrderLineDAO orderLineDAO;
 
     @Autowired
-    public OrderController(OrderDAO orderDao, OrderLineDAO orderLineDAO, CustomerDAO customerDAO, JavaMailSender emailSender) {
+    public OrderController(OrderDAO orderDao, OrderLineDAO orderLineDAO, CustomerDAO customerDAO, JavaMailSender emailSender, OrderLineDAO orderLineDAO1) {
         this.orderDao = orderDao;
         this.customerDAO = customerDAO;
         this.emailSender = emailSender;
+        this.orderLineDAO = orderLineDAO1;
     }
 
     // retrieve the history of orders from a customer
@@ -57,58 +58,11 @@ public class OrderController {
 
 
     // @Adrien j'ai changé le RequestBody en ORDER regarde si ca parait ok pour toi ou sinon bah tu peux m'insulter^^
-    @PostMapping("/{customerId}")
-    public @ResponseBody
-    boolean createAnOrder(@PathVariable String customerId, @RequestBody Order order) {
-//        try {
-//            //create pdf
-//            Document document = new Document();
-//            PdfWriter.getInstance(document, new FileOutputStream(String.format("REF_CLIENT %s - Commande %s.pdf", order.getCustomer().getId(), order.getOrderNumber())));
-//
-//            document.open();
-//
-//            Font font = FontFactory.getFont(FontFactory.defaultEncoding, 12, BaseColor.BLACK);
-//            Chunk chunk = new Chunk(String.format("Client %s - Commande %s", order.getCustomer().getId(), order.getOrderNumber()), font);
-//            Paragraph paragraph = new Paragraph(chunk);
-//            document.add(paragraph);
-//
-//            chunk = new Chunk("\n\n", font);
-//            paragraph = new Paragraph(chunk);
-//            document.add(paragraph);
-//
-//            PdfPTable table = new PdfPTable(3);
-//            table.setWidthPercentage(100);
-//            addTableHeader(table);
-//            addRows(table, order);
-//
-//            document.add(table);
-//
-//            document.close();
-//
-//        } catch (FileNotFoundException | DocumentException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            EmailService emailService = new EmailServiceImpl(emailSender);
-//            String to = "adrien.fek@gmail.com";
-//            String subject = String.format("REF_CLIENT %s - Commande %s", order.getCustomer().getId(), order.getOrderNumber());
-//            String text = "yo, ça s'passe bien de ton côté ?";
-//            String path = String.format("REF_CLIENT %s - Commande %s.pdf", order.getCustomer().getId(), order.getOrderNumber());
-//            emailService.sendMessageWithAttachment(to, subject, text, path);
-//            return true;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
+    @PostMapping
+    @JsonView(MyJsonView.Order.class)
+    public ResponseEntity<Order> createAnOrder(@RequestBody Order order) {
         try {
-//            Order order = new Order();
-            order.setCustomer(customerDAO.findById(customerId).orElse(null));
-            Set<OrderLine> orderLinesBackup = new HashSet<>(order.getOrderLines());
-            order.setOrderLines(null);
             orderDao.saveAndFlush(order);
-            order.setOrderLines(orderLinesBackup);
-
             if (order.getOrderLines() != null) {
                 for (OrderLine orderLine : order.getOrderLines()) {
                     OrderLinePK cle = new OrderLinePK();
@@ -118,11 +72,77 @@ public class OrderController {
                 }
                 orderDao.save(order);
             }
+            return ResponseEntity.ok().body(order);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+/*        try {
+            //create pdf
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(String.format("REF_CLIENT %s - Commande %s.pdf", order.getCustomer().getId(), order.getOrderNumber())));
+
+            document.open();
+
+            Font font = FontFactory.getFont(FontFactory.defaultEncoding, 12, BaseColor.BLACK);
+            Chunk chunk = new Chunk(String.format("Client %s - Commande %s", order.getCustomer().getId(), order.getOrderNumber()), font);
+            Paragraph paragraph = new Paragraph(chunk);
+            document.add(paragraph);
+
+            chunk = new Chunk("\n\n", font);
+            paragraph = new Paragraph(chunk);
+            document.add(paragraph);
+
+            PdfPTable table = new PdfPTable(3);
+            table.setWidthPercentage(100);
+            addTableHeader(table);
+            addRows(table, order);
+
+            document.add(table);
+
+            document.close();
+
+        } catch (FileNotFoundException | DocumentException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        try {
+            EmailService emailService = new EmailService(emailSender);
+            String to = "adrien.fek@gmail.com";
+            String subject = String.format("REF_CLIENT %s - Commande %s", order.getCustomer().getId(), order.getOrderNumber());
+            String text = "yo, ça s'passe bien de ton côté ?";
+            String path = String.format("REF_CLIENT %s - Commande %s.pdf", order.getCustomer().getId(), order.getOrderNumber());
+            emailService.sendMessageWithAttachment(to, subject, text, path);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+        }*/
+    }
+
+    @PostMapping("/edit")
+    @JsonView(MyJsonView.Order.class)
+    public ResponseEntity<Order> editAnOrder(@RequestBody Order order) {
+        try {
+            Order orderLinesToDelete = orderDao.findById(order.getOrderNumber()).orElse(null);
+        for (OrderLine orderLine : orderLinesToDelete.getOrderLines())
+            orderLineDAO.remove(orderLine.getArticle().getReference(), orderLine.getOrder().getOrderNumber());
+
+        order.getOrderLines().forEach(
+                orderLine -> {
+                    OrderLinePK cle = new OrderLinePK();
+                    cle.setIdOrder(order.getOrderNumber());
+                    cle.setIdArticle(orderLine.getArticle().getReference());
+                    orderLine.setOrderLinePK(cle);
+                }
+        );
+            Order response = orderDao.saveAndFlush(order);
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
-        return false;
     }
 
     private void addTableHeader(PdfPTable table) {
