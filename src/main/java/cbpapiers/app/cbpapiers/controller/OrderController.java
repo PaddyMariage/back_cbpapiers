@@ -125,19 +125,31 @@ public class OrderController {
     @JsonView(MyJsonView.Order.class)
     public ResponseEntity<Order> editAnOrder(@RequestBody Order order) {
         try {
-            Order orderLinesToDelete = orderDao.findById(order.getOrderNumber()).orElse(null);
-        for (OrderLine orderLine : orderLinesToDelete.getOrderLines())
-            orderLineDAO.remove(orderLine.getArticle().getReference(), orderLine.getOrder().getOrderNumber());
+            Order orderFromDB = orderDao.findById(order.getOrderNumber()).orElse(null);
+            Set<OrderLine> orderLinesToDelete = orderFromDB.getOrderLines();
 
-        order.getOrderLines().forEach(
-                orderLine -> {
-                    OrderLinePK cle = new OrderLinePK();
-                    cle.setIdOrder(order.getOrderNumber());
-                    cle.setIdArticle(orderLine.getArticle().getReference());
-                    orderLine.setOrderLinePK(cle);
+            order.getOrderLines().forEach(
+                    orderLine -> {
+                        OrderLinePK cle = new OrderLinePK();
+                        cle.setIdOrder(order.getOrderNumber());
+                        cle.setIdArticle(orderLine.getArticle().getReference());
+                        orderLine.setOrderLinePK(cle);
+                    }
+            );
+            orderFromDB.setOrderLines(order.getOrderLines());
+            Order response = orderDao.save(orderFromDB);
+
+            for (OrderLine orderLine : orderLinesToDelete) {
+                for (OrderLine line : order.getOrderLines()) {
+                    if (line.getArticle().getReference().equals(orderLine.getArticle().getReference())) {
+                        orderLinesToDelete.remove(orderLine);
+                        break;
+                    }
                 }
-        );
-            Order response = orderDao.saveAndFlush(order);
+            }
+
+            for (OrderLine orderLine : orderLinesToDelete)
+                orderLineDAO.remove(orderLine.getArticle().getReference(), orderLine.getOrder().getOrderNumber());
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             e.printStackTrace();
