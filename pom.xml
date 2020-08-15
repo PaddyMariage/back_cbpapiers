@@ -109,6 +109,12 @@
             <version>5.5.13.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <profiles>
@@ -136,7 +142,7 @@
                 <username>root</username>
                 <config>?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</config>
                 <password>root</password>
-                <port>3309</port>
+                <port>3306</port>
                 <secret>b69ae5b6660152494c2db0dd23a302508e9e70e5</secret>
                 <mail.username>hahanope</mail.username>
                 <mail.password>hahanope</mail.password>
