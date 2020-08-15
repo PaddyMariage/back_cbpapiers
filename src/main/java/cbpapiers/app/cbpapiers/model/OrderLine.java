@@ -4,6 +4,7 @@ package cbpapiers.app.cbpapiers.model;
 import cbpapiers.app.cbpapiers.jsonview.MyJsonView;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import cbpapiers.app.cbpapiers.model.pk.OrderLinePK;
@@ -13,6 +14,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "F_DOCLIGNE")
 public class OrderLine {
 

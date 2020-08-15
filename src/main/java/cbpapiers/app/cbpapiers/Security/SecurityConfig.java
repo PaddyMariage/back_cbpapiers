@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().httpBasic()
                 .and().csrf().disable().authorizeRequests()
                 //pour les requêtes qui seront uniquement accessibles avec un profil admin, il faudra ajouter /admin
-                .antMatchers("/customers/authentification", "/**").permitAll()
+                .antMatchers("/customers/authentification").permitAll()
                 //on doit être authentifié pour faire une requête
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
