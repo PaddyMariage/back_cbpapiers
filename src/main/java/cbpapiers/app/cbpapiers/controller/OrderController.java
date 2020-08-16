@@ -51,7 +51,7 @@ public class OrderController {
 
     // retrieve one specific order with a number order
     @GetMapping(value = "/{idOrder}")
-    @JsonView(MyJsonView.OrderDetails.class)
+    @JsonView(MyJsonView.Order.class)
     public Order getOrderById(@PathVariable String idOrder) {
         return orderDao.findById(idOrder).orElseThrow(() -> new NotFoundException(idOrder, Order.class));
     }

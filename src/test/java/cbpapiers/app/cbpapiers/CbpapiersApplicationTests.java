@@ -2,16 +2,16 @@ package cbpapiers.app.cbpapiers;
 
 
 import cbpapiers.app.cbpapiers.model.Customer;
+import cbpapiers.app.cbpapiers.model.Order;
 import cbpapiers.app.cbpapiers.model.TopArticleCustomer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.Alphanumeric.class)
 class CbpapiersApplicationTests {
 
     @Autowired
@@ -63,17 +64,17 @@ class CbpapiersApplicationTests {
 
     }
 
-	@WithMockUser(username = "adrano", roles = {"1"})
-	@Test
-	void appelGetCustomer_emailDoitEtreEgalA() throws Exception {
-		mvc.perform(get("/customers/adrano")).andExpect(jsonPath("$.email").value("contact@adranopizz.fr"));
-	}
+    @WithMockUser(username = "adrano", roles = {"1"})
+    @Test
+    void appelGetCustomer_emailDoitEtreEgalA() throws Exception {
+        mvc.perform(get("/customers/adrano")).andExpect(jsonPath("$.email").value("contact@adranopizz.fr"));
+    }
 
-	@WithMockUser(username = "adrano", roles = {"1"})
-	@Test
-	void appelGetAllCustomers_tailleDoitEtre748() throws Exception {
-		mvc.perform(get("/customers")).andExpect(jsonPath("$", hasSize(748)));
-	}
+    @WithMockUser(username = "adrano", roles = {"1"})
+    @Test
+    void appelGetAllCustomers_tailleDoitEtre748() throws Exception {
+        mvc.perform(get("/customers")).andExpect(jsonPath("$", hasSize(748)));
+    }
 
     /*****************
      * Partie Adrien *
@@ -88,8 +89,7 @@ class CbpapiersApplicationTests {
     }
 
     @Test
-    @Order(1)
-    public void testAuth_mustReturnJWT_and_testRequestWithJWT_mustSucceed() throws Exception {
+    public void A_Auth_mustReturnJWT_and_testRequestWithJWT_mustSucceed() throws Exception {
         // on convertit notre customer en JSON
         String body = mapper.writeValueAsString(customer);
 
@@ -107,6 +107,7 @@ class CbpapiersApplicationTests {
 
         System.out.println("Le JWT : " + token);
 
+        // testons le JWT
         int dotCount = 0;
         for (char c : token.toCharArray())
             if (c == '.')
@@ -120,11 +121,9 @@ class CbpapiersApplicationTests {
         System.out.println("nombre de parties : " + tokenParts.length);
         assertEquals(3, tokenParts.length);
 
-
         // on pourrait tester plus intensément le JWT en définissant notre header et notre payload
         // car ils sont connus puis en les encodant en base64
-        // et en refaisant la signature afin de comparer directement
-        // le retour de la version attendue.
+        // et en refaisant la signature afin de comparer directement le retour de la version attendue.
 
         // on dit au MockMvc de faire un requête get pour choper les informations du customer
         // avec authentification et autorisation via JWT
@@ -137,8 +136,7 @@ class CbpapiersApplicationTests {
     }
 
     @Test
-    @Order(2)
-    public void testGetTopArticleList_mustSucceed_and_mustGetListOf62Articles() throws Exception {
+    public void B_testGetTopArticleList_mustSucceed_and_mustGetListOf62Articles() throws Exception {
         String body = mapper.writeValueAsString(customer);
         String jsonResponseAsString = mvc.perform(
                 get("/toparticles/customer/" + customer.getId())
@@ -167,7 +165,7 @@ class CbpapiersApplicationTests {
         // on définit d'abord un type de collection
         // qu'on applique en tant que modèle dans gson.fromJson(JsonAsString, collectionType)
         // et on peut récupérer des List au lieu de Array[] par exemple.
-        Type collectionType = new TypeToken< Collection<TopArticleCustomer> >(){}.getType();
+        Type collectionType = new TypeToken<Collection<TopArticleCustomer>>(){}.getType();
         List<TopArticleCustomer> topArticleList = gson.fromJson(jsonResponseAsString, collectionType);
         System.out.println("nombre d'articles : " + topArticleList.size());
         assertEquals(62, topArticleList.size());
@@ -175,8 +173,7 @@ class CbpapiersApplicationTests {
     }
 
     @Test
-    @Order(3)
-    public void testRequestTypePost_mustFail() throws Exception {
+    public void C_testRequestTypePost_mustFail() throws Exception {
         String body = mapper.writeValueAsString(customer);
 
         // on fait un post sur une requête qui n'accepte que du get
@@ -193,27 +190,46 @@ class CbpapiersApplicationTests {
     }
 
 
-
     @Test
-    @Order(4)
-    public void testRequestType_mustSucceed_and_mustReturnStatus405() throws Exception {
+    public void D_testRequestType_mustSucceed_and_mustReturnStatus405() throws Exception {
         String body = mapper.writeValueAsString(customer);
 
         // on fait un post sur une requête qui n'accepte que du get
         int statusResponse = mvc.perform(
                 post("/toparticles/customer/" + customer.getId())
-                        .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                         .header("authorization", "Bearer " + token)
         )
-
                 .andReturn()
                 .getResponse()
                 .getStatus();
 
         System.out.println("Status error: " + statusResponse);
         assertEquals(405, statusResponse);
+    }
+
+    @Test
+    public void E_testGetOneOrder_mustSucceed() throws Exception {
+        String body = mapper.writeValueAsString(customer);
+
+        String jsonResponse = mvc.perform(
+                get("/orders/MOBI8724")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
+                        .header("authorization", "Bearer " + token)
+        )
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        System.out.println(jsonResponse);
+        Gson gson = new Gson();
+        Order order = gson.fromJson(jsonResponse, Order.class);
+        System.out.println(order.toString());
+        System.out.println(order.getOrderLines().size());
+        System.out.println(order.getOrderLines().toString());
     }
 
 }

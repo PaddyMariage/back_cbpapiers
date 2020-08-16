@@ -13,8 +13,8 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
+@Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "F_DOCLIGNE")
 public class OrderLine {
@@ -23,13 +23,13 @@ public class OrderLine {
     @JsonView(MyJsonView.OrderDetails.class)
     private OrderLinePK orderLinePK;
 
-    @JsonView({MyJsonView.OrderDetails.class,MyJsonView.Order.class})
+    @JsonView({MyJsonView.OrderDetails.class, MyJsonView.Order.class})
     private int quantity;
 
     @ManyToOne
     @MapsId("AR_Ref")
     @JoinColumn(name = "AR_Ref")
-    @JsonView({MyJsonView.OrderDetails.class,MyJsonView.Order.class})
+    @JsonView({MyJsonView.OrderDetails.class, MyJsonView.Order.class})
     private Article article;
 
     @ManyToOne
