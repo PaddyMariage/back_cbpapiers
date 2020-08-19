@@ -136,7 +136,7 @@ public class TopArticleCustomerController {
     }
 
     private List<TopArticleCustomer> createTopArticles(String id) {
-        List<Order> orders = orderDAO.findAllByCustomerId(id);
+        List<Order> orders = orderDAO.findAllByCustomerIdOrderByOrderDateDesc(id);
         Map<Article, Integer> articleAndFrequency = new HashMap<>();
         for (Order order : orders) {
 

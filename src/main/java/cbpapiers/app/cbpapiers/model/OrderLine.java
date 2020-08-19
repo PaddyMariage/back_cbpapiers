@@ -20,16 +20,16 @@ import javax.persistence.*;
 public class OrderLine {
 
     @EmbeddedId
-    @JsonView(MyJsonView.OrderDetails.class)
+    @JsonView({MyJsonView.Order.class})
     private OrderLinePK orderLinePK;
 
-    @JsonView({MyJsonView.OrderDetails.class, MyJsonView.Order.class})
+    @JsonView(MyJsonView.Order.class)
     private int quantity;
 
     @ManyToOne
     @MapsId("AR_Ref")
     @JoinColumn(name = "AR_Ref")
-    @JsonView({MyJsonView.OrderDetails.class, MyJsonView.Order.class})
+    @JsonView(MyJsonView.Order.class)
     private Article article;
 
     @ManyToOne

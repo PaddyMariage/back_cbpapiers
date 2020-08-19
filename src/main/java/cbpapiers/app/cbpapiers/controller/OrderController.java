@@ -20,6 +20,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Set;
@@ -30,14 +31,12 @@ import java.util.stream.Stream;
 @RequestMapping("/orders")
 public class OrderController {
     private OrderDAO orderDao;
-    private CustomerDAO customerDAO;
     private JavaMailSender emailSender;
     private OrderLineDAO orderLineDAO;
 
     @Autowired
     public OrderController(OrderDAO orderDao, OrderLineDAO orderLineDAO, CustomerDAO customerDAO, JavaMailSender emailSender, OrderLineDAO orderLineDAO1) {
         this.orderDao = orderDao;
-        this.customerDAO = customerDAO;
         this.emailSender = emailSender;
         this.orderLineDAO = orderLineDAO1;
     }
@@ -46,7 +45,7 @@ public class OrderController {
     @GetMapping("/history/{idCustomer}")
     @JsonView(MyJsonView.Order.class)
     public List<Order> getAllOrders(@PathVariable String idCustomer) {
-        return orderDao.findAllByCustomerId(idCustomer);
+        return orderDao.findAllByCustomerIdOrderByOrderDateDesc(idCustomer);
     }
 
     // retrieve one specific order with a number order
@@ -124,37 +123,48 @@ public class OrderController {
     @PostMapping("/edit")
     @JsonView(MyJsonView.Order.class)
     public ResponseEntity<Order> editAnOrder(@RequestBody Order order) {
-        try {
-            Order orderFromDB = orderDao.findById(order.getOrderNumber()).orElse(null);
-            Set<OrderLine> orderLinesToDelete = orderFromDB.getOrderLines();
+        Order orderFromDB = orderDao.findById(order.getOrderNumber()).orElse(null);
+        if (orderFromDB.getOrderLines() != null) {
+            for (OrderLine orderLine : orderFromDB.getOrderLines()) {
+                for (OrderLine line : order.getOrderLines()) {
+                    if (line.equals(orderLine)) {
+                        orderFromDB.getOrderLines().remove(orderLine);
+                        break;
+                    }
+                }
+            }
+            for (OrderLine orderLine : orderFromDB.getOrderLines()) {
+                orderLineDAO.remove(orderLine.getOrderLinePK().getIdArticle(), orderLine.getOrderLinePK().getIdOrder());
+            }
+        }
 
+        try {
             order.getOrderLines().forEach(
                     orderLine -> {
                         OrderLinePK cle = new OrderLinePK();
                         cle.setIdOrder(order.getOrderNumber());
                         cle.setIdArticle(orderLine.getArticle().getReference());
                         orderLine.setOrderLinePK(cle);
-                    }
-            );
+                    });
             orderFromDB.setOrderLines(order.getOrderLines());
-            Order response = orderDao.save(orderFromDB);
-
-            for (OrderLine orderLine : orderLinesToDelete) {
-                for (OrderLine line : order.getOrderLines()) {
-                    if (line.getArticle().getReference().equals(orderLine.getArticle().getReference())) {
-                        orderLinesToDelete.remove(orderLine);
-                        break;
-                    }
-                }
-            }
-
-            for (OrderLine orderLine : orderLinesToDelete)
-                orderLineDAO.remove(orderLine.getArticle().getReference(), orderLine.getOrder().getOrderNumber());
-            return ResponseEntity.ok().body(response);
+            orderDao.save(orderFromDB);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
+        return ResponseEntity.ok(order);
+    }
+
+    // on réenregsitre la commande pour set le champ annulation à true
+    // on garde une trace de la commande annulée (pas de delete)
+    @PostMapping("/cancel")
+    @JsonView(MyJsonView.Order.class)
+    public ResponseEntity<Order> cancelAnOrder(@RequestBody Order order) {
+        try {
+            orderDao.save(order);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok(order);
     }
 
     private void addTableHeader(PdfPTable table) {

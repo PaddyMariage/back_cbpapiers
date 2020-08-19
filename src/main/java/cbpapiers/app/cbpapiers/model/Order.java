@@ -32,7 +32,8 @@ public class Order {
     private String orderNumber;
 
     @ManyToOne
-    @JoinColumn(name = "CT_NUM", nullable = false)
+    @JoinColumn(name = "CT_NUM")
+    @JsonView(MyJsonView.Order.class)
     private Customer customer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.MERGE)
@@ -44,4 +45,8 @@ public class Order {
     @JsonView({MyJsonView.Order.class, MyJsonView.OrderDetails.class})
     @Column(name = "dateCommande")
     private Date orderDate;
+
+    @Column(name = "Annulation")
+    @JsonView({MyJsonView.Order.class, MyJsonView.OrderDetails.class})
+    private boolean isCancelled;
 }

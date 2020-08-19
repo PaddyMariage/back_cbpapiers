@@ -18,11 +18,11 @@ import java.util.Objects;
 public class OrderLinePK implements Serializable {
 
     @Column(name="AR_Ref")
-    @JsonView(MyJsonView.OrderDetails.class)
+    @JsonView({MyJsonView.OrderDetails.class, MyJsonView.Order.class})
     private String idArticle;
 
     @Column(name="DO_PIECE")
-    @JsonView(MyJsonView.OrderDetails.class)
+    @JsonView({MyJsonView.OrderDetails.class, MyJsonView.Order.class})
     private String idOrder;
 
     @Override

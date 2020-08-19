@@ -20,7 +20,7 @@ public class Customer {
 
     @Id
     @Column(name = "CT_NUM")
-    @JsonView(MyJsonView.Customer.class)
+    @JsonView({MyJsonView.Customer.class, MyJsonView.Order.class})
     private String id;
 
     @JsonView(MyJsonView.Customer.class)
@@ -28,9 +28,7 @@ public class Customer {
     private String name;
 
     private String password;
-
     private boolean isAdmin;
-
     private boolean isActive;
 
     @JsonView(MyJsonView.Customer.class)
