@@ -81,22 +81,22 @@ public class TopArticleCustomerController {
                             double finalPrice;
 
                             if (discount != 0 && clientPrice != 0) {
-                                //pourquoi diviser par 100 ? remise en % ?
-                                finalPrice = clientPrice * (1 - discount / 100);
+
+                                finalPrice = Math.ceil(clientPrice * (1 - discount / 100) * 100) / 100;
                                 topArticle.getArticle().setFinalPrice(finalPrice);
 
                             } else if (discount == 0 && clientPrice != 0) {
-                                topArticle.getArticle().setFinalPrice(clientPrice);
+                                topArticle.getArticle().setFinalPrice(Math.ceil(clientPrice * 100) / 100 );
 
                             } else if (discount != 0 && clientPrice == 0) {
-                                finalPrice = topArticle.getArticle().getUnitPrice() * (1 - discount / 100);
+                                finalPrice = Math.ceil(topArticle.getArticle().getUnitPrice() * (1 - discount / 100) * 100) / 100;
                                 topArticle.getArticle().setFinalPrice(finalPrice);
 
                             } else {
-                                topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
+                                topArticle.getArticle().setFinalPrice(Math.ceil(topArticle.getArticle().getUnitPrice() * 100) / 100);
                             }
                         } else {
-                            topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
+                            topArticle.getArticle().setFinalPrice(Math.ceil(topArticle.getArticle().getUnitPrice() * 100 ) / 100);
                         }
                     }
         );

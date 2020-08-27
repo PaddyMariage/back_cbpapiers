@@ -86,15 +86,15 @@ public class CustomerController {
         }
     }
 
-    @PostMapping("/createPassword/{idCustomer}")
-    public ResponseEntity createPassword(@RequestBody Customer customer, @PathVariable String idCustomer) {
-        Customer customerToUpdate = customerDAO.findById(idCustomer).orElse(null);
+    @PostMapping("/createPassword")
+    public ResponseEntity createPassword(@RequestBody Customer customer) {
+        Customer customerToUpdate = customerDAO.findById(customer.getId()).orElse(null);
         if(customerToUpdate!=null){
             customerToUpdate.setPassword(passwordEncoder.encode(customer.getPassword()));
             customerDAO.save(customerToUpdate);
             return ResponseEntity.ok(customer);
         } else
-            return ResponseEntity.badRequest().body("There is no customer with id : " + idCustomer);
+            return ResponseEntity.badRequest().body("There is no customer with id : " + customer.getId());
     }
 
     @PostMapping("/authentification")
