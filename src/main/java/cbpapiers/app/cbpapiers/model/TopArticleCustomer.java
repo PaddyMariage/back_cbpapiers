@@ -44,4 +44,14 @@ public class TopArticleCustomer implements Comparable {
     public int compareTo(Object top) {
         return this.position - ((TopArticleCustomer)top).getPosition();
     }
+
+    @Override
+    public String toString() {
+        return "TopArticleCustomer{" +
+                "topArticleCustomerPK=" + topArticleCustomerPK +
+                ", article=" + article +
+                ", customer=" + customer +
+                ", position=" + position +
+                '}';
+    }
 }

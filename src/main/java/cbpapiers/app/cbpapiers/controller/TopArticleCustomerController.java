@@ -44,7 +44,7 @@ public class TopArticleCustomerController {
             List<TopArticleCustomer> topArticlesCustomer = topArticleCustomerDAO.findAllByCustomerOrderByPosition(customer).orElse(null);
 
             if (topArticlesCustomer != null)
-                return calculateFinalPrices(topArticlesCustomer, customer.getId());
+                return calculateFinalPrices(topArticlesCustomer);
             else {
                 topArticlesCustomer = createTopArticles(customer.getId());
                 topArticlesCustomer.forEach(
@@ -58,49 +58,18 @@ public class TopArticleCustomerController {
                             topArticleCustomerDAO.save(topArticle);
                         }
                 );
-                return calculateFinalPrices(topArticlesCustomer, customer.getId());
+                return calculateFinalPrices(topArticlesCustomer);
             }
         }
         return new ArrayList<>();
     }
 
 
-    private List<TopArticleCustomer> calculateFinalPrices(List<TopArticleCustomer> topArticlesCustomer, String customerId) {
-//        List<Discount> discounts = discountDAO.findAllByCustomerId(customerId).orElse(null);
+    private List<TopArticleCustomer> calculateFinalPrices(List<TopArticleCustomer> topArticlesCustomer) {
         topArticlesCustomer.forEach(
 
                 topArticle -> {
 
-//                    if (discounts != null) {
-//                        for (Discount discount : discounts) {
-//                            if (discount.getArticle() == topArticle.getArticle()) {
-//                                final double remise = discount.getDiscount();
-//                                final double clientPrice = discount.getClientPrice();
-//                                double finalPrice;
-//                                if (remise != 0 && clientPrice != 0) {
-//                                    //pourquoi diviser par 100 ? remise en % ?
-//                                    finalPrice = clientPrice * (1 - remise / 100);
-//                                    topArticle.getArticle().setFinalPrice(finalPrice);
-//
-//                                } else if (remise == 0 && clientPrice != 0) {
-//                                    topArticle.getArticle().setFinalPrice(clientPrice);
-//
-//                                } else if (remise != 0 && clientPrice == 0) {
-//                                    finalPrice = topArticle.getArticle().getUnitPrice() * (1 - remise / 100);
-//                                    topArticle.getArticle().setFinalPrice(finalPrice);
-//
-//                                } else {
-//                                    topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
-//                                }
-//                            } else {
-//                                topArticle.getArticle().setFinalPrice(topArticle.getArticle().getUnitPrice());
-//                            }
-//                            break;
-//                        }
-//                    }
-//                });
-
-//                        }
                         DiscountPK discountKey = new DiscountPK();
                         discountKey.setIdArticle(topArticle.getArticle().getReference());
                         discountKey.setIdCustomer(topArticle.getCustomer().getId());
@@ -136,33 +105,26 @@ public class TopArticleCustomerController {
     }
 
     private List<TopArticleCustomer> createTopArticles(String id) {
-        List<Order> orders = orderDAO.findAllByCustomerIdOrderByOrderDateDesc(id);
-        Map<Article, Integer> articleAndFrequency = new HashMap<>();
-        for (Order order : orders) {
+        List<Order> orders = orderDAO.findAllByCustomerId(id);
 
+        Map<Article, Integer> articleAndFrequency = new HashMap<>();
+
+        for (Order order : orders) {
             for (OrderLine orderLine : order.getOrderLines()) {
                 Article article = orderLine.getArticle();
-
-               // une fonction pour dire :
-                // si article (la clé) n'est pas dans le map, l'ajouter et y associer la valeur (quantité) 1.
-                // c'est donc la première fois qu'on rencontre cet article.
-                // si l'article (la clé) y est déjà, augmenter la valeur (quantité) de 1.
                 articleAndFrequency.merge(article, 1, Integer::sum);
             }
         }
-        Set<Map.Entry<Article, Integer>> entries = articleAndFrequency.entrySet();
-        Comparator<Map.Entry<Article, Integer>> valueComparator = (o1, o2) -> o2.getValue() - o1.getValue();
 
-        List<Map.Entry<Article, Integer>> sortedList = new ArrayList<>(entries);
+        List<Map.Entry<Article, Integer>> sortedList = new ArrayList<>(articleAndFrequency.entrySet());
+        Comparator<Map.Entry<Article, Integer>> valueComparator = (o1, o2) -> o2.getValue() - o1.getValue();
         sortedList.sort(valueComparator);
 
         List<TopArticleCustomer> topArticlesCustomer = new ArrayList<>();
-
         for (Map.Entry<Article, Integer> articleIntegerEntry : sortedList) {
             topArticlesCustomer.add(new TopArticleCustomer(articleIntegerEntry.getKey(),
                     sortedList.indexOf(articleIntegerEntry) + 1));
         }
-
         return topArticlesCustomer;
     }
 

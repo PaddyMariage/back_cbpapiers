@@ -32,3 +32,5 @@ build/
 .vscode/
 
 src/main/java/cbpapiers/app/cbpapiers/MyGenerator.java
+
+Test Results - CbpapiersApplicationTests.html

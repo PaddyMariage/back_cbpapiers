@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface OrderDAO extends JpaRepository<Order,String> {
     List<Order> findAllByCustomerIdOrderByOrderDateDesc(String idCustomer);
+    List<Order> findAllByCustomerId(String idCustomer);
 }
